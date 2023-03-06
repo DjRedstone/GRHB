@@ -1,0 +1,60 @@
+<img id="logo" class="header-icon" src="/imgs/icon.png" onclick="window.location.href=window.location.origin+'/home'">
+<a id="home" class="header-link" href="/home/">Accueil</a>
+<a id="introducing" class="header-link" href="/introducing/">Présentation</a>
+<a id="newsletters" class="header-link" href="/newsletters/">Les Bulletins</a>
+<a id="events" class="header-link" href="/events/">Les Manifestations</a>
+<a id="themes" class="header-link" href="/themes/">Les Thèmes</a>
+<a id="contact" class="header-link" href="/contact/">Nous Contacter</a>
+<div id="nav-bg"></div>
+<nav>
+    <a id="home" class="header-link" href="/home/">Accueil</a>
+    <a id="introducing" class="header-link" href="/introducing/">Présentation</a>
+    <a id="newsletters" class="header-link" href="/newsletters/">Les Bulletins</a>
+    <a id="events" class="header-link" href="/events/">Les Manifestations</a>
+    <a id="themes" class="header-link" href="/themes/">Les Thèmes</a>
+    <a id="contact" class="header-link" href="/contact/">Nous Contacter</a>
+</nav>
+<script>
+    let showNavBar = false;
+    const linksIDs = ["home", "introducing", "newsletters", "events", "themes", "contact"];
+    if (window.screen.width < 1600) {
+
+        $("header").css("justify-content", "space-between");
+
+        for (i = 0; i < linksIDs.length; i++)
+            document.getElementById(linksIDs[i]).remove();
+        
+        const tabIcon = document.createElement("img");
+        tabIcon.src = "https://api.iconify.design/tabler:align-justified.svg";
+        tabIcon.className = "header-icon";
+        document.getElementById("logo").before(tabIcon);
+        
+        const navBar = document.getElementsByTagName("nav")[0];
+        const navBarBg = document.getElementById("nav-bg");
+
+        function changeNavBarDisplay() {
+            if (showNavBar) {
+                setTimeout(() => {
+                    navBarBg.style.display = "none";
+                }, 500);
+                setTimeout(() => {
+                    navBarBg.style.opacity = 0;
+                }, 1);
+                navBar.style.transform = "translateX(-100%)";
+            } else {
+                navBarBg.style.display = "flex";
+                setTimeout(() => {
+                    navBarBg.style.opacity = 1;
+                }, 1);
+                navBar.style.transform = "translateX(0)";
+            }
+            showNavBar = ! showNavBar;
+        }
+
+        tabIcon.onclick = changeNavBarDisplay;
+        navBarBg.onclick = changeNavBarDisplay;
+    } else {
+        document.getElementsByTagName("nav")[0].remove();
+        document.getElementById("nav-bg").remove();
+    }
+</script>

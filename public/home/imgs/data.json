@@ -1,0 +1,82 @@
+{
+    "img-11.jpg": [
+        {
+            "name": "Paul Leclercq",
+            "size": 80,
+            "x": 75,
+            "y": 100
+        },
+        {
+            "name": "Robet Dubois",
+            "size": 75,
+            "x": 235,
+            "y": 130
+        },
+        {
+            "name": "Marie-Cécile Ducatez",
+            "size": 75,
+            "x": 385,
+            "y": 150
+        },
+        {
+            "name": "André Delalleau",
+            "size": 75,
+            "x": 520,
+            "y": 125
+        },
+        {
+            "name": "Luc Brevart",
+            "size": 75,
+            "x": 615,
+            "y": 145
+        },
+        {
+            "name": "Pierrot Queste",
+            "size": 75,
+            "x": 725,
+            "y": 150
+        },
+        {
+            "name": "Jacques Delporte",
+            "size": 75,
+            "x": 860,
+            "y": 155
+        },
+        {
+            "name": "Jean-Paul Delobel",
+            "size": 80,
+            "x": 960,
+            "y": 140
+        },
+        {
+            "name": "Monique Martel",
+            "size": 80,
+            "x": 895,
+            "y": 260
+        },
+        {
+            "name": "Joel Bailly",
+            "size": 80,
+            "x": 760,
+            "y": 260
+        },
+        {
+            "name": "Ane-Marie Delporte",
+            "size": 80,
+            "x": 575,
+            "y": 270
+        },
+        {
+            "name": "Marie Leblanc",
+            "size": 80,
+            "x": 380,
+            "y": 270
+        },
+        {
+            "name": "Muriel Hulot",
+            "size": 90,
+            "x": 205,
+            "y": 275
+        }
+    ]
+}

@@ -1,0 +1,82 @@
+{
+    "newsletters": [
+      
+    ],
+    "events": [
+
+    ],
+    "themes": [
+        {
+          "title": "La mairie",
+          "path": "la-mairie",
+          "type": "folder",
+          "infos": []
+        },
+        {
+          "title": "Les écoles",
+          "path": "les-ecoles",
+          "type": "folder",
+          "infos": []
+        },
+        {
+          "title": "Les lieux de culte",
+          "path": "les-lieux-de-culte",
+          "type": "folder",
+          "infos": [
+            {
+              "title": "L'église",
+              "path": "l-eglise",
+              "type": "folder",
+              "infos": [
+                {
+                  "title": "Les Eglises",
+                  "path": "les-eglises",
+                  "type": "blog",
+                  "infos": {
+                    "article": "<p style='font-size: 1.25em;'>Une église existait à Busnes avant l’année 1043 puisqu’à cette date, son autel fut donné au chapitre de Lillers, dans la charte de fondation de la collégiale. Cette église fut reconstruite au début du XIIIème siècle puis détruite en partie par des bandes flamandes en 1346.<br><br>En 1383, les Anglais à travers des courses folles dans la région, pillèrent et saccagèrent le village. De ce fait, en 1519, l’église fortement abimée, subit un remaniement qui, pour la nef et la façade, fut une véritable reconstruction.<br><br>Puis vinrent le temps des guerres de religion et plus tard, la Révolution. L’église fut alors vendue et devint un édifice public. Elle fut rendue au culte le 20 février 1802. (1er Ventose an X de la République).<br><br>Sérieusement brûlée par les dévastations antérieures, elle avait été réparée. Mais cette église était devenue trop petite et elle avait un grave inconvénient, celui de ne pas laisser apercevoir l’autel.<br><br>Le 1er novembre 1866 est nommé à Busnes Mr l’abbé FAIDY. Sitôt arrivé, les paroissiens lui manifestent le désir d’agrandir l’église devenue trop petite pour la population. On envisagea alors d’abattre la tour, d’agrandir la nef à la place du choeur et de construire un autre clocher au portail. Une souscription fut alors ouverte et devant le succès remporté, on entrevoit de reconstruire l’église toute entière.<br><br>Décembre 1869, un premier devis est demandé à Monsieur Norman, architecte à Hesdin. Survient la guerre de 1870 et la défaite. Mais le curé et les paroissiens sont persévérants.  Le 26 Janvier 1874, après la signature de l’adjudication des travaux, ceux-ci peuvent commencer. (entreprise des frères DESQUENNES à Busnes)<br><br>Deux ans après, le 2 juillet 1876, le choeur et le transept sont terminés. En 1878, la nef est terminée et livrée au culte. Le clocher restait encore à construire. Malheureusement Mr l’abbé FAIDY décédait le 25 décembre 1878.  En 1879, une nouvelle souscription est faite dans la paroisse pour la construction de la flèche qui manquait encore. En juin 1879, un étage est ajouté à la tour et une flèche en pierres couronnait le tout. Tous ces travaux furent terminés le 9 octobre 1879.<br><br>Mais il reste beaucoup à faire. Pendant plus de 20 ans, les travaux d’aménagement vont se succéder.<br><br>1881, le 14 octobre un ouragan abat la croix de la flèche du clocher<br><br>1882, érection du maître autel<br><br>1883, les chapiteaux du choeur sont sculptés par Mr Marlé de St Pierre les Calais, la chaire est replacée<br><br>1884, le tabernacle est installé en août et les bancs de communion en chêne sculpté provenant de l’ancienne église sont replacés moyennant quelques modifications<br><br>1885, ravalement intérieur et extérieur; les murs extérieurs sont jointoyés et une couleur uniforme est appliquée sur les briques à l’intérieur avec un ton différent pour le tour des fenêtres. La croix est replacée au sommet du clocher.<br><br>1889, pavage de l’église<br><br>Tout n’était pas terminé mais tout était prêt pour la consécration de cette nouvelle église. Elle fut faite par Monseigneur DENNEL, évêque d’Arras  le mardi 23 juillet 1889.<br><br>1894, Chapelle de St Joseph<br><br>1895, Chapelle de la Vierge<br><br>1896, Vitrail de la Chapelle de la Vierge<br><br>1897, les anciennes marches du maître autel, trop petites, sont remplacées par du marbre de Marquise et le bas de l’autel s’orne d’un Christ au tombeau<br><br>1898, vitraux des nefs et des transepts (les noms des donateurs sont inscrits au bas de chaque vitrail)<br><br>1899, les stalles dans le choeur et nouveau chemin de croix<br><br>1900, le dimanche 8 avril inauguration solennelle des nouvelles orgues. La tribune n’étant pas assez grande pour les recevoir, il a fallu l’agrandir par une espèce de terrasse. La chorale est née à cette occasion pour rehausser la solennité des offices<br><br>1914, a vu l’électrification de l’église<br><br>Reconstruite dans le style gothique du XIIIe siècle, les colonnes de la nef datent de la reconstruction partielle exécutée au commencement du XVIe siècle. L’une d’elles engagée dans le pilier, à l’entrée du bas côté de gauche, porte en belle minuscule gothique la date « 1519 ».<br><br><br><br>L’Eglise Saint Paul de Busnes  détient encore bien des secrets. Tout ne peut être relaté ici mais les membres de l’Association restent à la disposition de toute personne s’y intéressant. ils sont aussi toujours à la recherche de documents, témoignages, photographies qui viendront agrandir leur documentation<br><br><br><br>Merci de votre attention<br><br><br><br><br><br><br><br><br><br><span style='position: absolute; text-align: end; right: 2%; bottom: 2%;'>Sources : Abbé BOCQUET, ancien curé de Busnes<br><br>Dictionnaire historique et archéologique du département du pas-de-calais<br><br>Registres paroissiaux</span></p>",
+                    "date": "2014-09-29",
+                    "author": "Anne Marie Delporte"
+                  }
+                }
+              ]
+            },
+            {
+              "title": "Le presbytère",
+              "path": "le-presbytère",
+              "type": "folder",
+              "infos": []
+            },
+            {
+              "title": "Les chapelles",
+              "path": "les-chapelles",
+              "type": "folder",
+              "infos": []
+            }
+          ]
+        },
+        {
+          "title": "Le village",
+          "path": "le-village",
+          "type": "folder",
+          "infos": []
+        },
+        {
+          "title": "Les châteaux",
+          "path": "les-chateaux",
+          "type": "folder",
+          "infos": []
+        },
+        {
+          "title": "Les personnalités",
+          "path": "les-personnalités",
+          "type": "folder",
+          "infos": []
+        },
+        {
+          "title": "La malle aux souvenirs",
+          "path": "la-malle-aux-souvenirs",
+          "type": "folder",
+          "infos": []
+        }
+    ]
+  }

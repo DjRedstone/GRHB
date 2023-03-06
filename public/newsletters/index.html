@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Aboreto' rel='stylesheet'>
+    <link rel="shortcut icon" href="/imgs/icon-clean.png" type="image/x-icon">
+    <link rel="stylesheet" href="/global-style.css">
+    <title>GRHB | Les Bulletins</title>
+</head>
+<body>
+    <header>
+        <script>
+            $("header").load("/header.html", () => {
+                $("#newsletters").attr("data-selected", "true");
+            });
+        </script>
+    </header>
+    <article>
+        <h1 id="title">Les Bulletins</h1>
+        <hr id="list-hr">
+        <div id="grid-list" class="blog-grid"></div>
+        <hr id="blog-hr">
+        <div id="grid-blog" class="blog-grid"></div>
+        <p></p>
+    </article>
+    <footer>
+        <script>
+            $("footer").load("/footer.html"); 
+        </script>
+    </footer>
+    <script src="/themesLoader.js"></script>
+    <script>load("newsletters");</script>
+</body>
+</html>
