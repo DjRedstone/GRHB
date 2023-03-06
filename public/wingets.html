@@ -1,0 +1,20 @@
+<h2>Notre dernière publication</h2>
+<hr>
+<p>Chargement...</p>
+<script>
+    if (window.screen.width < 1600) {
+        $(".wingets").remove();
+    }
+
+    $(document).ready(() => {
+        function getLastBlog(data) {
+            return data.themes[2].infos[0].infos[0]
+        }
+
+        $.getJSON("/feed.json", (data) => {
+            const blogs = [];
+            let themes = data.themes;
+            
+        });
+    });
+</script>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Aboreto' rel='stylesheet'>
+    <link rel="shortcut icon" href="../imgs/icon-clean.png" type="image/x-icon">
+    <link rel="stylesheet" href="../global-style.css">
+    <title>GRHB | Accueil</title>
+</head>
+<body>
+    <header>
+        <script>
+            $("header").load("../header.html", () => {
+                $("#home").attr("data-selected", "true");
+            });
+        </script>
+    </header>
+    <article>
+        <h1>Groupe de Recherches Historiques de Busnes</h1>
+        <hr>
+        <table>
+            <tr>
+                <td><img id="table-img-1" class="table-img" src="imgs/img-1.jpg" onclick="zoomInOnImage('1')"></td>
+                <td><img id="table-img-2" class="table-img" src="imgs/img-2.png" onclick="zoomInOnImage('2')"></td>
+                <td><img id="table-img-3" class="table-img" src="imgs/img-3.jpg" onclick="zoomInOnImage('3')"></td>
+                <td><img id="table-img-4" class="table-img" src="imgs/img-4.jpg" onclick="zoomInOnImage('4')"></td>
+            </tr>
+            <tr>
+                <td><img id="table-img-5" class="table-img" src="imgs/img-5.jpg" onclick="zoomInOnImage('5')"></td>
+                <td><img id="table-img-6" class="table-img" src="imgs/img-6.jpg" onclick="zoomInOnImage('6')"></td>
+                <td><img id="table-img-7" class="table-img" src="imgs/img-7.jpg" onclick="zoomInOnImage('7')"></td>
+                <td><img id="table-img-8" class="table-img" src="imgs/img-8.jpg" onclick="zoomInOnImage('8')"></td>
+            </tr>
+            <tr>
+                <td><img id="table-img-9" class="table-img" src="imgs/img-9.jpg" onclick="zoomInOnImage('9')"></td>
+                <td><img id="table-img-10" class="table-img" src="imgs/img-10.jpg" onclick="zoomInOnImage('10')"></td>
+                <td><img id="table-img-11" class="table-img" src="imgs/img-11.jpg" onclick="zoomInOnImage('11')"></td>
+                <td><img id="table-img-12" class="table-img" src="imgs/img-12.jpg" onclick="zoomInOnImage('12')"></td>
+            </tr>
+        </table>
+        <p>Vous pouvez nous rejoindre sur <a class="link" href="https://www.facebook.com/Groupe-de-Recherches-Historiques-de-Busnes-1635973926714397">la page facebook du Groupe</a>.</p>
+    </article>
+    <footer>
+        <script>
+            $("footer").load("../footer.html"); 
+        </script>
+    </footer>
+    <div class="wingets">
+        <script>
+            $(".wingets").load("../wingets.html");
+        </script>
+    </div>
+    <!---Hidden--->
+    <div id="img-zoom-in-bg">
+        <div id="img-zoom-in-div">
+            <img src="#" id="img-zoom-in">
+        </div>
+    </div>
+    <script src="../zoomOnImage.js"></script>
+    <!------------>
+</body>
+</html>

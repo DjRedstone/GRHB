@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Aboreto' rel='stylesheet'>
+    <link rel="shortcut icon" href="../imgs/icon-clean.png" type="image/x-icon">
+    <link rel="stylesheet" href="../global-style.css">
+    <title>GRHB | Nous Contacter</title>
+</head>
+<body>
+    <header>
+        <script>
+            $("header").load("../header.html", () => {
+                $("#contact").attr("data-selected", "true");
+            });
+        </script>
+    </header>
+    <article>
+        <h1>Nous contacter</h1>
+        <hr>
+        <p style="color: red;">* Obligatoire</p>
+        <form>
+            <h2 class="required">Votre nom</h2>
+            <input required type="text" placeholder="Entrez votre nom" id="name">
+            <!--
+            <h2 class="required">Votre e-mail</h2>
+            <input required type="email" placeholder="Entrez votre e-mail" id="e-mail">
+            -->
+            <h2 class="required">Le sujet de votre message</h2>
+            <input required type="text" placeholder="Entrez le sujet de votre message" id="subject">
+            <h2 class="required">Votre message</h2>
+            <textarea required id="message" cols="30" rows="10"></textarea>
+            <br><br>
+            <input type="submit" id="submit" value="Envoyer">
+        </form>
+        <br>
+    </article>
+    <footer>
+        <script>
+            $("footer").load("../footer.html");
+        </script>
+    </footer>
+    <script>
+        const contactForm = document.querySelector("form");
+
+        const name = $("#name");
+        const subject = $("#subject");
+        const message = $("#message");
+
+        contactForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        $("#submit").val("...");
+
+        const formData = {
+            name: name.val(),
+            subject: subject.val(),
+            message: message.val()
+        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/sendMail/");
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.onload = () => {
+            $("#submit").val("Envoyer");
+            if (xhr.responseText == "success") {
+            alert("E-mail envoyé !");
+            location.reload();
+            } else
+            alert("Oops, nous avons eu un problème lors de l'envoi de votre message !");
+        }
+
+        xhr.send(JSON.stringify(formData));
+        })
+    </script>
+</body>
+</html>

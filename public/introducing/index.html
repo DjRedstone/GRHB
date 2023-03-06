@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Aboreto' rel='stylesheet'>
+    <link rel="shortcut icon" href="../imgs/icon-clean.png" type="image/x-icon">
+    <link rel="stylesheet" href="../global-style.css">
+    <title>GRHB | Présentation</title>
+</head>
+<body>
+    <header>
+        <script>
+            $("header").load("../header.html", () => {
+                $("#introducing").attr("data-selected", "true");
+            });
+        </script>
+    </header>
+    <article>
+        <h1>Présentation</h1>
+        <hr>
+        <table>
+            <tr>
+                <td><img id="table-img-1" class="table-img" src="imgs/img-1.png" onclick="zoomInOnImage('1')"></td>
+                <td><p>L’Association le « Groupe Historique de Busnes » a été créée en 1995 à l’initiative de quelques Busnois férus d’histoire et en particulier de l’histoire de leur village.</p></td>
+            </tr>
+        </table>
+        <img style="width: 500px;" id="table-img-2" class="table-img" src="imgs/img-2.jpg" onclick="zoomInOnImage('2')">
+        <p>Composée actuellement d’une vingtaine de membres, ceux-ci continuent d’entretenir la mémoire du village.</p>
+        <p>Leur mission : réunir photos, documents, témoignages.  La consultation des Archives Départementales enrichit ce fonds déjà bien fourni.</p>
+        <p>Association de partage de connaissances, elle en fait profiter les Busnois intéressés par leur patrimoine.</p>
+        <table>
+            <tr>
+                <td style="width: 50%;"><img style="width: 400px;" id="table-img-3" class="table-img" src="imgs/img-3.jpg" onclick="zoomInOnImage('3')"></td>
+                <td style="width: 50%;">
+                    <p>Un bulletin annuel est édité lors de la Foire à l’échalote. Le numéro 18 est sorti lors de la Foire à l’Echalote 2020.</p>
+                    <p>Le site est accessible à tous : <a href="http://www.busnes-histoire.fr">busnes-histoire.fr</a></p>
+                    <p>L’Association possède également son <a href="https://www.facebook.com/Groupe-de-Recherches-Historiques-de-Busnes-1635973926714397">Facebook</a>.</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%;"><p>N’hésitez pas à apporter votre collaboration en fournissant tout document susceptible de les intéresser. Après scan, ils vous seront rendus très rapidement et viendront enrichir les milliers de documents de leur photothèque.</p></td>
+                <td style="width: 50%;"><img style="width: 400px;" id="table-img-4" class="table-img" src="imgs/img-4.jpg" onclick="zoomInOnImage('4')"></td>
+            </tr>
+            <tr>
+                <td style="width: 50%;"><img style="width: 400px;" id="table-img-5" class="table-img" src="imgs/img-5.jpg" onclick="zoomInOnImage('5')"></td>
+                <td style="width: 50%;">
+                    <p>Nous pouvons également venir vous rendre visite afin que vous nous parliez de « votre ancien temps ».</p>
+                    <p>Au plaisir de vous rencontrer,</p>
+                    <p>Anne-Marie Delporte</p>
+                    <p>Présidente du Groupe Historique de Busnes</p>
+                </td>
+            </tr>
+        </table>
+    </article>
+    <footer>
+        <script>
+            $("footer").load("../footer.html"); 
+        </script>
+    </footer>
+    <!---Hidden--->
+    <div id="img-zoom-in-bg">
+        <div id="img-zoom-in-div">
+            <img src="#" id="img-zoom-in">
+        </div>
+    </div>
+    <script src="../zoomOnImage.js"></script>
+    <!------------>
+</body>
+</html>
