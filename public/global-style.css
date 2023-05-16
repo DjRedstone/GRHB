@@ -96,7 +96,7 @@ article hr {
     border-top: 1px solid #444;
     padding-bottom: 25px;
 }
-article p {
+article p, article li {
     font-size: 1.5em;
 }
 article a {
@@ -312,4 +312,7 @@ footer {
     padding: 0 20px;
     background-color: #f1f2f4;
     border-radius: 10px;
+}
+.wingets li {
+    font-size: 1.25em;
 }

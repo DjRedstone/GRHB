@@ -1,20 +1,22 @@
-<h2>Notre dernière publication</h2>
-<hr>
 <p>Chargement...</p>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     if (window.screen.width < 1600) {
         $(".wingets").remove();
-    }
+    } else {
+        const sokcet = io();
 
-    $(document).ready(() => {
-        function getLastBlog(data) {
-            return data.themes[2].infos[0].infos[0]
-        }
-
-        $.getJSON("/feed.json", (data) => {
-            const blogs = [];
-            let themes = data.themes;
-            
+        $(document).ready(() => {
+            sokcet.emit("get-wingets-data");
+            sokcet.on("get-wingets-data", (data) => {
+                $(".wingets").empty();
+                let element = "<h2>Nos derniers articles</h2><hr><ul>";
+                for (const d of data) {
+                    element += `<li><a class="link" href="#">${d.title}</a></li>`;
+                }
+                element += "</ul><br>"
+                $(".wingets").append(element);
+            });
         });
-    });
+    }
 </script>

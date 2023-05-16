@@ -42,7 +42,7 @@ function load(type) {
                     icon.on("click", () => {
                         const customPath = splitPath(document.location.pathname);
                         customPath.pop();
-                        let customPathString = document.location.origin + "/themes";
+                        let customPathString = document.location.origin + "/" + document.location.pathname.split("/")[1];
                         if (customPath.length > 0) customPath.forEach(e => customPathString += "/" + e);
                         document.location.href = customPathString;
                     });
@@ -53,7 +53,12 @@ function load(type) {
         for (i = 0; i < themes.length; i++) {
             const theme = themes[i];
 
-            (theme.type == "folder" ? $("#grid-list") : $("#grid-blog")).append(`<a id="${theme.path}" class="${theme.type}-grid-case" href="${redirect(theme.path)}">${theme.title}</a>`);
+            const titleLength = 55;
+            let title = theme.title;
+            if (title.length >= titleLength) {
+                title = title.slice(0, titleLength-1) + "...";
+            }
+            (theme.type == "folder" ? $("#grid-list") : $("#grid-blog")).append(`<a id="${theme.path}" class="${theme.type}-grid-case" href="${redirect(theme.path)}">${title}</a>`);
             if (theme.type == "blog") {
                 $(`#${theme.path}`).append(`<p class="blog-date">${new Date(theme.infos.date).toLocaleDateString()}</p>`);
             }

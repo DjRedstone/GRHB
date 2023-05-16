@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Aboreto' rel='stylesheet'>
+    <link rel="shortcut icon" href="../imgs/icon-clean.png" type="image/x-icon">
+    <link rel="stylesheet" href="../global-style.css">
+    <title>GRHB | Admin Pannel</title>
+</head>
+<body>
+    <header>
+        <script>
+            $("header").load("../header.html", () => {
+                $("#home").attr("data-selected", "true");
+            });
+        </script>
+    </header>
+    <article>
+        <h1>Admin Pannel</h1>
+        <hr>
+        <form>
+            <input required type="text" placeholder="Entrez le mot de passe" id="password" autocomplete="off">
+            <br><br>
+            <input type="submit" id="submit" value="Suivant">
+        </form>
+        <br id="last-br">
+    </article>
+    <footer>
+        <script>
+            $("footer").load("../footer.html"); 
+        </script>
+    </footer>
+    <script>
+        const socket = io();
+        const form = document.querySelector("form");
+        const password = $("#password");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            $("#submit").val("...");
+
+            socket.emit("login", password.val());
+            socket.on("login", (res) => {
+                if (typeof(res) == String) {
+
+                    return
+                }
+                form.remove();
+
+                const title = document.createElement("h2");
+                title.textContent = "Thèmes";
+
+                const grid = document.createElement("div");
+                grid.id = "grid-themes";
+                grid.className = "blog-grid";
+
+                const article = document.querySelector("article");
+                article.insertBefore(title, document.getElementById("last-br"));
+                article.insertBefore(grid, document.getElementById("last-br"));
+
+                socket.emit("first-load", res);
+                socket.on("first-load", (data) => {
+                    console.log(data);
+                    const themes = data.themes;
+                    for (i = 0; i < themes.length; i++) {
+                        const theme = themes[i];
+                        const a = document.createElement("a");
+                        a.id = theme.path;
+                        a.textContent = theme.title;
+                        a.className = "folder-grid-case";
+                        grid.appendChild(a);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

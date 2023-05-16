@@ -5,6 +5,8 @@ const http = require("http").createServer(app);
 const path = require("path");
 const port = 3000;
 
+const io = require("socket.io")(http);
+
 const nodemailer = require("nodemailer");
 const bp = require("body-parser");
 
@@ -17,6 +19,16 @@ require("dotenv").config();
 
 app.use("/jquery", express.static(path.join(__dirname, "node_modules/jquery/dist")));
 app.use(express.static("public"));
+app.use(express.static("private"));
+
+Array.prototype.remove = function() {
+  // Helper function to remove a single element from a list if exists
+  item = arguments[0]
+  if (this.includes(item)) {
+      index = this.indexOf(item)
+      this.splice(index, 1)
+   }
+}
 
 const pages = ["home", "introducing", "newsletters", "events", "themes", "contact"];
 for (i = 0; i < pages.length; i++) {
@@ -26,17 +38,6 @@ for (i = 0; i < pages.length; i++) {
     });
 }
 
-/*
-const feed = require("./public/feed.json");
-const themes = feed.themes;
-for (i = 0; i < themes.length; i++) {
-    const theme = themes[i];
-    app.get(`/themes/${theme.path}/`, (req, res) => {
-      res.sendFile(path.join(__dirname, `/public/themes/template.html`));
-    });
-}
-*/
-
 app.get("/", (req, res) => {
     res.redirect("./home");
 });
@@ -45,7 +46,9 @@ const fs = require("fs-extra");
 
 // ----- FEED -----
 
-(function createRssFeed() {
+var FEED;
+
+function loadFeed() {
   const feed = `{
     "newsletters": [
 
@@ -66,13 +69,84 @@ const fs = require("fs-extra");
         console.log("File created!");
     });
   }
-})();
+  FEED = require(path);
+}
 
+function getAllPost(list) {
+  res = []
+  for (const data of list) {
+    if (data.type == "folder") {
+      res = [res, getAllPost(data.infos)].flat();
+    } else if (data.type == "blog") {
+      res.push(data);
+    }
+  }
+  return res
+}
+
+function getAllPostFromFeed() {
+  loadFeed();
+  return [getAllPost(FEED.newsletters), getAllPost(FEED.events), getAllPost(FEED.themes)].flat();
+}
+
+app.get("/newsletters/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/newsletters/index.html"));
+});
 app.get("/themes/*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/themes/index.html"));
 });
 app.get("/events/*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/events/index.html"));
+});
+
+app.get("/admin/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/private/index.html"));
+});
+
+function randomID() {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+console.log();
+
+const tokens = [];
+
+const adminCode = process.env["ADMIN-CODE"];
+if (adminCode == undefined) throw "Need Password";
+io.on("connection", (socket) => {
+  let token;
+
+  socket.on("get-wingets-data", () => {
+    const allPost = getAllPostFromFeed();
+    allPost.sort((a, b) => {
+      return b.infos.date.localeCompare(a.infos.date);
+    });
+    res = []
+    for (let i = 0; i < Math.min(allPost.length, 5); i++) {
+      res.push(allPost[i]);
+    }
+    socket.emit("get-wingets-data", res);
+  });
+
+  socket.on("login", (pass) => {
+    if (pass != adminCode) {
+      socket.emit("login", "wrong password");
+      return
+    }
+    token = randomID();
+    tokens.push(token);
+    socket.emit("login", token);
+
+    socket.on("first-load", (tok) => {
+      if (tok != token) return
+      const path = "./public/feed.json";
+      socket.emit("first-load", require(path));
+    });
+  });
+
+  socket.on("disconnect", () => {
+    if (token != undefined)  tokens.remove(token);
+  });
 });
 
 // ----- E-MAIL -----
