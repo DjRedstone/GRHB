@@ -100,7 +100,7 @@ app.get("/events/*", (req, res) => {
 });
 
 app.get("/admin/", (req, res) => {
-  res.sendFile(path.join(__dirname, "/private/index.html"));
+  res.sendFile(path.join(__dirname, "/private/admin/index.html"));
 });
 
 function randomID() {
