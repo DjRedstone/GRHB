@@ -1,3 +1,12 @@
+const converter = new showdown.Converter({
+    "emoji": "true",
+    "simpleLineBreaks": "true",
+    "tables": "true",
+    "noHeaderId": "true",
+    "openLinksInNewWindow": "true",
+    "simplifiedAutoLink": "true"
+});
+
 function redirect(path) {
     const href = document.location.href;
     return href + (href[href.length-1] == "/" ? "" : "/") + path
@@ -78,7 +87,8 @@ function load(type) {
 
         if (actualTheme.type == "blog") {
             $("article").append("<hr>");
-            $("article").append(`<div id="article">${actualTheme.infos.article}</div>`);
+            const textArticle = converter.makeHtml(actualTheme.infos.article);
+            $("article").append(`<div id="article">${textArticle}</div>`);
             $("#article").append(`<p class="credit">Publié le ${new Date(actualTheme.infos.date).toLocaleDateString(undefined, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})} par ${actualTheme.infos.author}.</p>`)
         }
     });
