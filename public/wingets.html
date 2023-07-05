@@ -12,7 +12,7 @@
                 $(".wingets").empty();
                 let element = "<h2>Nos derniers articles</h2><hr><ul>";
                 for (const d of data) {
-                    element += `<li><a class="link" href="#">${d.title}</a></li>`;
+                    element += `<li><a class="link" href="../${d.absolute_path}">${d.title}</a></li>`;
                 }
                 element += "</ul><br>"
                 $(".wingets").append(element);
