@@ -46,9 +46,9 @@ app.get("/", (req, res) => {
 const feedManager = new FeedManager(
     "./public/feed.json",
     {
-      "newsletters": [],
-      "events": [],
-      "themes": []
+      "newsletters": {},
+      "events": {},
+      "themes": {}
     }
 );
 
@@ -101,6 +101,16 @@ io.on("connection", (socket) => {
     socket.emit("login", token);
 
     console.log(`${socket.id} is connected to the admin pannel`);
+
+    socket.on("create-folder", (askedToken, path, name) => {
+      if (askedToken !== token) return
+      try {
+        feedManager.createFolder(path, name);
+        socket.emit("create-folder", "OK", feedManager.data);
+      } catch (e) {
+        socket.emit("create-folder", e);
+      }
+    });
   });
 
   socket.on("disconnect", () => {
