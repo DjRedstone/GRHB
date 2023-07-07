@@ -316,3 +316,43 @@ footer {
 .wingets li {
     font-size: 1.25em;
 }
+
+.admin-grid-item {
+    display: grid;
+    grid-template: "a b";
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 50px;
+    background-color: #888;
+    border-radius: 5px;
+    transition: background-color .25s ease;
+    cursor: pointer;
+}
+.admin-grid-item:hover {
+    background-color: #444;
+}
+.admin-grid-item span {
+    margin-left: 10px;
+    color: white;
+    font-size: 2em;
+    width: 100%;
+}
+.admin-grid-item div {
+    display: grid;
+    grid-template: "a b";
+    margin-right: 10px;
+}
+.admin-grid-item button {
+    font-size: 1em;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 1% 1%;
+    filter: drop-shadow(0 0 0.5em white);
+    transition: filter .5s;
+}
+.admin-grid-item button:hover {
+    padding: 1% 2%;
+    font-size: 1.5em;
+    cursor: pointer;
+}

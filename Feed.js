@@ -18,21 +18,21 @@ class FeedManager {
         fs.writeSync(this.data, this.path);
     }
 
-    getAllPosts(list) {
+    getAllPosts(object) {
         let res = [];
-        for (const data of list) {
-            if (data.type === "folder")
-                res = [res, this.getAllPosts(data.infos)].flat();
-            else if (data.type === "blog")
-                res.push(data);
+        for (const value of Object.values(object)) {
+            if (value.type === "folder")
+                res = [res, this.getAllPosts(value.content)].flat();
+            else if (value.type === "blog")
+                res.push(value);
         }
         return res
     }
 
     getAllPostsFromFeed() {
         const res = [];
-        for (const list of Object.values(this.data))
-            res.push(this.getAllPosts(list));
+        for (const categorie of Object.keys(this.data))
+            res.push(this.getAllPosts(this.data[categorie]));
         return res.flat();
     }
 }

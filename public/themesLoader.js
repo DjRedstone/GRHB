@@ -20,58 +20,53 @@ function splitPath(path) {
     return r
 }
 
-function getInfos(list, path) {
-    for (j = 0; j < list.length; j++) {
-        if (list[j].path === path)
-            return list[j].infos
-    }
-}
-
 function load(type) {
     $.getJSON("/feed.json", (data) => {
         let themes = data[type];
-        const path = splitPath(document.location.pathname);
         let beforeThemes;
+        const path = splitPath(document.location.pathname);
 
         for (i = 0; i < path.length; i++) {
             if (i+1 === path.length)
                 beforeThemes = themes;
-            themes = getInfos(themes, path[i]);
+            themes = themes[path[i]].content;
         }
-
-        let actualTheme;
 
         if (beforeThemes !== undefined) {
-            for (i = 0; i < beforeThemes.length; i++) {
-                if (beforeThemes[i].path === path[path.length-1]) {
-                    actualTheme = beforeThemes[i];
-                    const icon = $("<img id='go-back-icon' src='https://api.iconify.design/ri:arrow-go-back-fill.svg'>")
-                    $("article").append(icon);
-                    $("#title").text(actualTheme.title);
-                    icon.on("click", () => {
-                        const customPath = splitPath(document.location.pathname);
-                        customPath.pop();
-                        let customPathString = document.location.origin + "/" + document.location.pathname.split("/")[1];
-                        if (customPath.length > 0) customPath.forEach(e => customPathString += "/" + e);
-                        document.location.href = customPathString;
-                    });
-                }
-            }
+            const icon = $("<img id='go-back-icon' src='https://api.iconify.design/ri:arrow-go-back-fill.svg'>");
+            $("article").append(icon);
+            const actualTheme = beforeThemes[path[path.length-1]];
+            $("#title").text(actualTheme.title);
+            icon.on("click", () => {
+                const customPath = splitPath(document.location.pathname);
+                customPath.pop();
+                let customPathString = document.location.origin + "/" + document.location.pathname.split("/")[1];
+                if (customPath.length > 0) customPath.forEach(e => customPathString += "/" + e);
+                document.location.href = customPathString;
+            });
         }
 
-        for (i = 0; i < themes.length; i++) {
-            const theme = themes[i];
+        if (typeof themes === "string") {
+            const textArticle = converter.makeHtml(themes);
+            $("article").append(`<hr><div id="article">${textArticle}</div>`);
+            const article = beforeThemes[path[path.length-1]];
+            $("#article").append(`<p class="credit">Publié le ${new Date(article.date).toLocaleDateString(undefined, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})} par ${article.author}.</p>`);
+        } else {
+            for (const themePath of Object.keys(themes)) {
+                const theme = themes[themePath];
 
-            const titleLength = 55;
-            let title = theme.title;
-            if (title.length >= titleLength) {
-                title = title.slice(0, titleLength-1) + "...";
-            }
-            (theme.type === "folder" ? $("#grid-list") : $("#grid-blog")).append(`<a id="${theme.path}" class="${theme.type}-grid-case" href="${redirect(theme.path)}">${title}</a>`);
-            if (theme.type === "blog") {
-                $(`#${theme.path}`).append(`<p class="blog-date">${new Date(theme.infos.date).toLocaleDateString()}</p>`);
-            }
+                const titleLength = 55;
+                let title = theme.title;
+                if (title.length >= titleLength)
+                    title = title.splice(0, titleLength-1) + "...";
 
+                (theme.type === "folder" ? $("#grid-list") : $("#grid-blog")).append(
+                    `<a id="${themePath}" class="${theme.type}-grid-case" href="${redirect(themePath)}">${title}</a>`
+                );
+
+                if (theme.type === "blog")
+                    $(`#${themePath}`).append(`<p class="blog-date">${new Date(theme.date).toLocaleDateString()}</p>`);
+            }
         }
 
         if (document.getElementById("grid-list").children.length === 0) {
@@ -81,14 +76,6 @@ function load(type) {
         if (document.getElementById("grid-blog").children.length === 0) {
             $("#blog-hr").remove();
             $("#grid-blog").remove();
-        }
-
-        if (actualTheme === undefined) return;
-
-        if (actualTheme.type === "blog") {
-            const textArticle = converter.makeHtml(actualTheme.infos.article);
-            $("article").append(`<hr><div id="article">${textArticle}</div>`);
-            $("#article").append(`<p class="credit">Publié le ${new Date(actualTheme.infos.date).toLocaleDateString(undefined, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})} par ${actualTheme.infos.author}.</p>`)
         }
     });
 }

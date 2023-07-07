@@ -15,6 +15,15 @@ socket.on("login", (res) => {
     }
     form.remove();
 
+    loadFolderAndBlogsTab();
+
+    $.getJSON("/feed.json", (data) => {
+        feedData = data;
+        firstLoad();
+    });
+});
+
+function loadFolderAndBlogsTab() {
     const foldersTitle = $("<h2>Dossiers</h2>");
     const foldersAdd = $(`<form id="folder-add-form">
                                     <label>Créer un dossier : </label>
@@ -45,16 +54,15 @@ socket.on("login", (res) => {
     blogsAdd.on("submit", (e) => {
         e.preventDefault();
     });
-
-    $.getJSON("../feed.json", (data) => {
-        feedData = data;
-        firstLoad();
-    });
-});
+}
 
 function firstLoad() {
+    $("#folder-add-form").hide();
+    $("#blogs-add-form").hide();
     [["newsletters", "Les bulletins"], ["events", "Les manifestations"], ["themes", "Les thèmes"]].forEach((categorie) => {
-        const item = $(`<a id="${categorie[0]}" class="folder-grid-case">${categorie[1]}</a>`);
+        const item = $(`<div id="${categorie[0]}" class="admin-grid-item">
+                            <span>${categorie[1]}</span>
+                        </div>`);
         $("#grid-folders").append(item);
         item.on("click", (e) => {
             e.preventDefault();
@@ -68,21 +76,12 @@ function getListFromPath(path) {
     const pathList = path.split(".");
     let data = feedData;
     for (let i = 0; i < pathList.length; i++) {
-        if (i === 0) {
+        if (i === 0)
             data = data[pathList[0]];
-        } else {
-            data = findInList(pathList[i], data).infos;
-        }
+        else
+            data = data[pathList[i]].content;
     }
     return data;
-}
-
-function findInList(path, list) {
-    for (const ele of list) {
-        if (ele.path === path) {
-            return ele
-        }
-    }
 }
 
 let path = "";
@@ -93,28 +92,44 @@ function loadFoldersAndBlogs(list) {
     blogsGrid.empty();
 
     if (path !== "") {
-        foldersGrid.append("<a id='go-back-folder' class='folder-grid-case'>...</a>");
+        $("#folder-add-form").show();
+        $("#blogs-add-form").show();
+
+        foldersGrid.append("<div id='go-back-folder' class='admin-grid-item'><span>...</span></div>");
         $("#go-back-folder").on("click", (e) => {
             e.preventDefault();
             path = path.split(".").slice(0, path.split(".").length-1).join(".");
             loadFoldersAndBlogs(getListFromPath(path));
         });
 
-        for (const data of list) {
+        for (const dataPath of Object.keys(list)) {
+            const data = list[dataPath];
             const titleLength = 55;
             let title = data.title;
             if (title.length >= titleLength) {
                 title = title.slice(0, titleLength-1) + "...";
             }
             if (data.type === "folder") {
-                foldersGrid.append(`<a id="${data.path}" class="folder-grid-case" >${title}</a>`);
-                $(`#${data.path}`).on("click", (e) => {
+                foldersGrid.append(`<div id="${dataPath}" class="admin-grid-item" >
+                                        <span>${title}</span>
+                                        <div>
+                                            <button>Modifier</button>
+                                            <button>Supprimer</button>
+                                        </div>
+                                    </div>`);
+                $(`#${dataPath}`).on("click", (e) => {
                     e.preventDefault();
-                    path += "." + data.path;
+                    path += "." + dataPath;
                     loadFoldersAndBlogs(getListFromPath(path));
                 });
             } else {
-                blogsGrid.append(`<a id="${data.path}" class="folder-grid-case" >${title}</a>`);
+                blogsGrid.append(`<div id="${data.path}" class="admin-grid-item" >
+                                      <span>${title}</span>
+                                      <div>
+                                          <button>Modifier</button>
+                                          <button>Supprimer</button>
+                                       </div>
+                                  </div>`);
             }
         }
     } else {

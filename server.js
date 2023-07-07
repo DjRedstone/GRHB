@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
   socket.on("get-wingets-data", () => {
     const allPost = feedManager.getAllPostsFromFeed();
     allPost.sort((a, b) => {
-      return b.infos.date.localeCompare(a.infos.date);
+      return b.date.localeCompare(a.date);
     });
     const res = []
     for (let i = 0; i < Math.min(allPost.length, 5); i++) {
