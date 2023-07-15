@@ -132,6 +132,36 @@ io.on("connection", (socket) => {
        }
     });
 
+    socket.on("create-article", (askedToken, path, name, content, date, author) => {
+       if (askedToken !== token) return
+       try {
+           feedManager.createArticle(path, name, content, date, author);
+           socket.emit("create-article", "OK", feedManager.data);
+       } catch (e) {
+           socket.emit("create-article", e);
+       }
+    });
+
+    socket.on("edit-article", (askedToken, path, name, content, date, author) => {
+       if (askedToken !== token) return
+       try {
+           feedManager.editArticle(path, name, content, date, author);
+           socket.emit("edit-article", "OK", feedManager.data);
+       } catch (e) {
+           socket.emit("edit-article", e);
+       }
+    });
+
+    socket.on("delete-article", (askedToken, path) => {
+        if (askedToken !== token) return
+        try {
+            feedManager.deleteArticle(path);
+            socket.emit("delete-article", "OK", feedManager.data);
+        } catch (e) {
+            socket.emit("delete-article", e);
+        }
+    });
+
     socket.on("disconnect", () => {
         console.log(`${socket.id} is diconnected to the admin pannel`);
         tokens.remove(token);

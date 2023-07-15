@@ -32,6 +32,16 @@ socket.on("login", (token) => {
         firstLoad();
     });
 
+    function afterManaging(res, data) {
+        if (res === "OK") {
+            feedData = data;
+        } else {
+            alert("Une erreur est apparu :\n\n" + res);
+        }
+        loadFolderAndBlogsTab();
+        loadFoldersAndBlogs(getListFromPath(path));
+    }
+
     function loadFolderAndBlogsTab() {
         $("article")
             .empty()
@@ -69,21 +79,20 @@ socket.on("login", (token) => {
         });
         blogsAdd.on("submit", (e) => {
             e.preventDefault();
+            loadBlogEditor({
+                "title": "Titre de l'article",
+                "content": "Commnez à écrire ici...",
+                "date": Date.now(),
+                "author": "Admin"
+            }, false);
         });
     }
 
-    socket.on("create-folder", (res, newData) => {
-        if (res === "OK") {
-            alert("Le dossier a été créé !");
-            $("#folder-add-input").val("");
-            feedData = newData;
-            loadFoldersAndBlogs(getListFromPath(path));
-        } else {
-            alert("Une erreur s'est produite :\n\n" + res);
-        }
-    });
+    socket.on("create-folder", afterManaging);
+    socket.on("edit-folder", afterManaging);
+    socket.on("delete-folder", afterManaging);
 
-    function loadBlogEditor(data) {
+    function loadBlogEditor(data, editing = true) {
         $("article")
             .empty()
             .append("<h1>Admin Pannel</h1>")
@@ -105,7 +114,7 @@ socket.on("login", (token) => {
         const authorInput = $(`<label for="author-input">Auteur : </label><input type="text" id="author-input" value="${data.author}"><br><br>`);
         editorForm.append(authorInput);
 
-        const saveInput = $("<input type='submit' value='Sauvgarder'>");
+        const saveInput = $(`<input type="submit" value="${editing ? "Sauvgarder" : "Créer"}">`);
         editorForm.append(saveInput);
 
         const quill = new Quill("#editor", {
@@ -119,7 +128,7 @@ socket.on("login", (token) => {
                     ["link", "image"]
                 ]
             },
-            theme: 'snow'
+            theme: "snow"
         });
 
         $(textInput.children()[0]).css(textAreaCss);
@@ -127,12 +136,28 @@ socket.on("login", (token) => {
         quill.setContents(quill.clipboard.convert(converter.makeHtml(data.content)), "silent");
 
         editorForm.on("submit", (e) => {
-           e.preventDefault();
-           const title = $("#title-input").val();
-           const content = quill.root.innerHTML;
-           const author = $("#author-input").val();
+            e.preventDefault();
+
+            const title = $("#title-input").val();
+            const content = converter.makeMarkdown(quill.root.innerHTML);
+            const author = $("#author-input").val();
+
+            console.log("Title :", title);
+            console.log("Content :", content);
+            console.log("Author :", author)
+
+            if (editing) {
+                const articlePath = data.absolute_path.split("/")[data.absolute_path.split("/").length-1];
+                socket.emit("edit-article", token, path + "." + articlePath, title, content, new Date(data.date), author);
+            } else {
+                socket.emit("create-article", token, path, title, content, Date.now(), author);
+            }
         });
     }
+
+    socket.on("create-article", afterManaging);
+    socket.on("edit-article", afterManaging);
+    socket.on("delete-article", afterManaging);
 
     function firstLoad() {
         $("#folder-add-form").hide();
@@ -180,9 +205,13 @@ socket.on("login", (token) => {
                 loadFoldersAndBlogs(getListFromPath(path));
             });
 
-            for (const dataPath of Object.keys(list)) {
+            const listKeys = Object.keys(list);
+            listKeys.sort((a, b) => {
+                return ((list[a].date !== undefined && list[b].date !== undefined) ? list[b].date.localeCompare(list[a].date) : 0)
+            });
+            for (const dataPath of listKeys) {
                 const data = list[dataPath];
-                const titleLength = 55;
+                const titleLength = 50;
                 let title = data.title;
                 if (title.length >= titleLength) {
                     title = title.slice(0, titleLength-1) + "...";
@@ -217,34 +246,31 @@ socket.on("login", (token) => {
                             loadFoldersAndBlogs(getListFromPath(path));
                         }
                     });
-                    $(`#${dataPath}-edit-button`).on("click", (e) => {
-                       e.preventDefault();
-
-                    });
                 } else {
-                    blogsGrid.append(`<div id="${data.path}" class="admin-grid-item" >
+                    blogsGrid.append(`<div id="${dataPath}" class="admin-grid-item" >
                                       <span>${title}</span>
                                       <div>
-                                          <button>Modifier</button>
-                                          <button>Supprimer</button>
+                                          <button id="${dataPath}-edit-button">Modifier</button>
+                                          <button id="${dataPath}-delete-button">Supprimer</button>
                                        </div>
                                   </div>`);
+                    $(`#${dataPath}`).on("click", (e) => {
+                        e.preventDefault();
+                        // EDIT ARTICLE
+                        if ($(`#${dataPath}-edit-button:hover`)[0] === $(`#${dataPath}-edit-button`)[0]) {
+                            loadBlogEditor(data);
+                            // DELETE ARTICLE
+                        } else if ($(`#${dataPath}-delete-button:hover`)[0] === $(`#${dataPath}-delete-button`)[0]) {
+                            const result = window.confirm(`Vous confirmez la suppression du dossier "${data.title}"`);
+                            if (result) {
+                                socket.emit("delete-article", token, path + "." + dataPath);
+                            }
+                        }
+                    });
                 }
             }
         } else {
             firstLoad();
         }
     }
-
-    function afterManaging(res, data) {
-        if (res === "OK") {
-            feedData = data;
-            loadFoldersAndBlogs(getListFromPath(path));
-        } else {
-            alert("Une erreur est apparu :\n\n" + res);
-        }
-    }
-
-    socket.on("edit-folder", afterManaging);
-    socket.on("delete-folder", afterManaging);
 });

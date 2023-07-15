@@ -68,7 +68,7 @@ function load(type) {
             for (const themePath of themesPaths) {
                 const theme = themes[themePath];
 
-                const titleLength = 55;
+                const titleLength = 50;
                 let title = theme.title;
                 if (title.length >= titleLength)
                     title = title.slice(0, titleLength-1) + "...";

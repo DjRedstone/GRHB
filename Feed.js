@@ -110,11 +110,38 @@ class FeedManager {
             "title": name,
             "type": "blog",
             "content": content,
-            "date": moment(date).format("DD-MM-YYYY"),
+            "date": moment(date).format("YYYY-MM-DD"),
             "author": author,
             "absolute_path": path.replace(".", "/") + "/" + nameToPath(name)
         };
         console.log(`Article "${name}" succecfully created in "${path}"!`);
+        this.update();
+    }
+
+    editArticle(path, name, content, date, author) {
+        if (!this.checkIfExist(path)) throw "Article not exist"
+        const workingData = this.getListFromPath(path.split(".").slice(0, path.split(".").length-1).join("."));
+        const oldPath = path.split(".")[path.split(".").length-1];
+        const articleData = workingData[oldPath];
+        delete workingData[oldPath];
+        workingData[nameToPath(name)] = {
+            "title": name,
+            "type": "blog",
+            "content": content,
+            "date": moment(date).format("YYYY-MM-DD"),
+            "author": author,
+            "absolute_path": path.split(".").slice(0, path.split(".").length-1).join("/") + "/" + nameToPath(name)
+        };
+        console.log(`Article "${path}" succecfully edited as "${name}"`);
+        this.update();
+    }
+
+    deleteArticle(path) {
+        if (!this.checkIfExist(path)) throw "Article not exist"
+        const workingData = this.getListFromPath(path.split(".").slice(0, path.split(".").length-1).join("."));
+        const oldPath = path.split(".")[path.split(".").length-1];
+        delete workingData[oldPath];
+        console.log(`Article "${path}" succecfully deleted`);
         this.update();
     }
 }
