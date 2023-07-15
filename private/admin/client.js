@@ -15,6 +15,13 @@ socket.on("login", (token) => {
     }
     form.remove();
 
+    loadFolderAndBlogsTab();
+
+    $.getJSON("/feed.json", (data) => {
+        feedData = data;
+        firstLoad();
+    });
+
     function loadFolderAndBlogsTab() {
         const foldersTitle = $("<h2>Dossiers</h2>");
         const foldersAdd = $(`<form id="folder-add-form">
@@ -50,14 +57,14 @@ socket.on("login", (token) => {
     }
 
     socket.on("create-folder", (res, newData) => {
-       if (res === "OK") {
-           alert("Le dossier a été créé !");
-           $("#folder-add-input").val("");
-           feedData = newData;
-           loadFoldersAndBlogs(getListFromPath(path));
-       } else {
-           alert("Une erreur s'est produite :\n\n" + res);
-       }
+        if (res === "OK") {
+            alert("Le dossier a été créé !");
+            $("#folder-add-input").val("");
+            feedData = newData;
+            loadFoldersAndBlogs(getListFromPath(path));
+        } else {
+            alert("Une erreur s'est produite :\n\n" + res);
+        }
     });
 
     function firstLoad() {
@@ -117,15 +124,16 @@ socket.on("login", (token) => {
                     foldersGrid.append(`<div id="${dataPath}" class="admin-grid-item" >
                                         <span>${title}</span>
                                         <div>
-                                            <button>Modifier</button>
-                                            <button>Supprimer</button>
+                                            <button id="${dataPath}-edit-button">Modifier</button>
+                                            <button id="${dataPath}-delete-button">Supprimer</button>
                                         </div>
                                     </div>`);
                     $(`#${dataPath}`).on("click", (e) => {
                         e.preventDefault();
+                        $(`#${dataPath}-edit-button`).hover();
                         path += "." + dataPath;
                         loadFoldersAndBlogs(getListFromPath(path));
-                    });
+                    })
                 } else {
                     blogsGrid.append(`<div id="${data.path}" class="admin-grid-item" >
                                       <span>${title}</span>
@@ -141,10 +149,7 @@ socket.on("login", (token) => {
         }
     }
 
-    loadFolderAndBlogsTab();
-
-    $.getJSON("/feed.json", (data) => {
-        feedData = data;
-        firstLoad();
-    });
+    function promptEditFolder(path) {
+        const newName = prompt("Entrez le nouveau nom du dossier");
+    }
 });

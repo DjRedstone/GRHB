@@ -37,6 +37,7 @@ function load(type) {
             $("article").append(icon);
             const actualTheme = beforeThemes[path[path.length-1]];
             $("#title").text(actualTheme.title);
+            $("title").text("GRHB | " + actualTheme.title);
             icon.on("click", () => {
                 const customPath = splitPath(document.location.pathname);
                 customPath.pop();
@@ -49,16 +50,28 @@ function load(type) {
         if (typeof themes === "string") {
             const textArticle = converter.makeHtml(themes);
             $("article").append(`<hr><div id="article">${textArticle}</div>`);
+            const images = $("#article img");
+            for (let i = 0; i < images.length; i++) {
+                const image = $(images[i]);
+                image.attr("class", "table-img");
+                image.attr("id", `table-img-${i}`);
+                image.attr("onclick", `zoomInOnImage("${i}")`);
+                if (image.parent().parent().attr("id") === "article") image.css("width", "100%");
+            }
             const article = beforeThemes[path[path.length-1]];
             $("#article").append(`<p class="credit">Publié le ${new Date(article.date).toLocaleDateString(undefined, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})} par ${article.author}.</p>`);
         } else {
-            for (const themePath of Object.keys(themes)) {
+            const themesPaths = Object.keys(themes);
+            themesPaths.sort((a, b) => {
+                return ((themes[a].date !== undefined && themes[b].date !== undefined) ? themes[b].date.localeCompare(themes[a].date) : 0)
+            });
+            for (const themePath of themesPaths) {
                 const theme = themes[themePath];
 
                 const titleLength = 55;
                 let title = theme.title;
                 if (title.length >= titleLength)
-                    title = title.splice(0, titleLength-1) + "...";
+                    title = title.slice(0, titleLength-1) + "...";
 
                 (theme.type === "folder" ? $("#grid-list") : $("#grid-blog")).append(
                     `<a id="${themePath}" class="${theme.type}-grid-case" href="${redirect(themePath)}">${title}</a>`

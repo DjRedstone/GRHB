@@ -3,10 +3,9 @@ const moment = require("moment");
 
 function nameToPath(name) {
     return name.toLowerCase()
-        .replace(" ", "-")
-        .replace("'", "-")
-        .replace("\"", "-")
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9_]+/gi, "-")
+        .replace(/^-|-$/g, "")
+        .toLowerCase()
 }
 
 class FeedManager {
@@ -77,6 +76,21 @@ class FeedManager {
             "content": {}
         };
         console.log(`Folder "${name}" succecfully created in "${path}"!`);
+        this.update();
+    }
+
+    editFolder(path, newName) {
+        if (!this.checkIfExist(path)) throw "Folder not exist"
+        const workingData = this.getListFromPath(path.split(".").slice(0, path.split(".").length-1).join("."));
+        const oldPath = path.split(".")[path.split(".").length-1];
+        const folderData = workingData[oldPath];
+        delete workingData[oldPath];
+        workingData[nameToPath(newName)] = {
+            "title": newName,
+            "type": "folder",
+            "content": folderData.content
+        }
+        console.log(`Folder "${path}" succecfully edited as "${newName}"`);
         this.update();
     }
 

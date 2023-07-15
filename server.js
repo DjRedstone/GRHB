@@ -111,11 +111,21 @@ io.on("connection", (socket) => {
         socket.emit("create-folder", e);
       }
     });
-  });
 
-  socket.on("disconnect", () => {
-    console.log(`${socket.id} is diconnected to the admin pannel`);
-    if (token !== undefined)  tokens.remove(token);
+    socket.on("edit-folder", (askedToken, path, newName) => {
+       if (askedToken !== token) return
+       try {
+           feedManager.editFolder(path, newName);
+           socket.emit("edit-folder", "OK", feedManager.data);
+       } catch (e) {
+           socket.emit("edit-folder", e);
+       }
+    });
+
+      socket.on("disconnect", () => {
+          console.log(`${socket.id} is diconnected to the admin pannel`);
+          tokens.remove(token);
+      });
   });
 });
 

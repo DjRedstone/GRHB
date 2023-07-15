@@ -11,7 +11,7 @@ body {
     flex-direction: column;
     height: 100vh;
     margin: 0;
-    background: url("../imgs/bg.jpg");
+    background: url("/imgs/bg.jpg");
 }
 
 header {
@@ -106,6 +106,28 @@ article a {
 }
 article a:hover {
     text-decoration-color: rgba(0, 0, 0, 1);
+}
+article img {
+    max-width: 100%;
+}
+article td img:hover {
+    transform: scale(1.25);
+}
+article blockquote {
+    color: #535a60;
+    padding: 0 1em;
+    position: relative;
+}
+article blockquote p::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    border-radius: 8px;
+    background: #c8ccd0;
 }
 
 table {
