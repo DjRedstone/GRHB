@@ -130,10 +130,30 @@ socket.on("login", (token) => {
                                     </div>`);
                     $(`#${dataPath}`).on("click", (e) => {
                         e.preventDefault();
-                        $(`#${dataPath}-edit-button`).hover();
-                        path += "." + dataPath;
-                        loadFoldersAndBlogs(getListFromPath(path));
-                    })
+                        // EDIT FOLDER
+                        if ($(`#${dataPath}-edit-button:hover`)[0] === $(`#${dataPath}-edit-button`)[0]) {
+                            const newName = window.prompt("Entrez un nouveau nom", data.title);
+                            if (!newName) {
+                                alert("Votre modification n'a pas été prise en compte");
+                            } else {
+                                socket.emit("edit-folder", token, path + "." + dataPath, newName);
+                            }
+                        // DELETE FOLDER
+                        } else if ($(`#${dataPath}-delete-button:hover`)[0] === $(`#${dataPath}-delete-button`)[0]) {
+                            const result = window.confirm(`Vous confirmez la suppression du dossier "${data.title}"`);
+                            if (result) {
+                                socket.emit("delete-folder", token, path + "." + dataPath);
+                            }
+                        // GOTO FOLDER
+                        } else {
+                            path += "." + dataPath;
+                            loadFoldersAndBlogs(getListFromPath(path));
+                        }
+                    });
+                    $(`#${dataPath}-edit-button`).on("click", (e) => {
+                       e.preventDefault();
+
+                    });
                 } else {
                     blogsGrid.append(`<div id="${data.path}" class="admin-grid-item" >
                                       <span>${title}</span>
@@ -149,7 +169,15 @@ socket.on("login", (token) => {
         }
     }
 
-    function promptEditFolder(path) {
-        const newName = prompt("Entrez le nouveau nom du dossier");
+    function afterManaging(res, data) {
+        if (res === "OK") {
+            feedData = data;
+            loadFoldersAndBlogs(getListFromPath(path));
+        } else {
+            alert("Une erreur est apparu :\n\n" + res);
+        }
     }
+
+    socket.on("edit-folder", afterManaging);
+    socket.on("delete-folder", afterManaging);
 });

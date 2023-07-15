@@ -94,6 +94,15 @@ class FeedManager {
         this.update();
     }
 
+    deleteFolder(path) {
+        if (!this.checkIfExist(path)) throw "Folder not exist"
+        const workingData = this.getListFromPath(path.split(".").slice(0, path.split(".").length-1).join("."));
+        const oldPath = path.split(".")[path.split(".").length-1];
+        delete workingData[oldPath];
+        console.log(`Folder "${path}" succecfully deleted`);
+        this.update();
+    }
+
     createArticle(path, name, content, date, author) {
         if (this.checkIfExist(path + "." + nameToPath(name))) throw "Article already exist"
         const workingData = this.getListFromPath(path);

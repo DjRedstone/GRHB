@@ -122,10 +122,20 @@ io.on("connection", (socket) => {
        }
     });
 
-      socket.on("disconnect", () => {
-          console.log(`${socket.id} is diconnected to the admin pannel`);
-          tokens.remove(token);
-      });
+    socket.on("delete-folder", (askedToken, path) => {
+       if (askedToken !== token) return
+       try {
+           feedManager.deleteFolder(path);
+           socket.emit("delete-folder", "OK", feedManager.data);
+       } catch (e) {
+           socket.emit("delete-folder", e);
+       }
+    });
+
+    socket.on("disconnect", () => {
+        console.log(`${socket.id} is diconnected to the admin pannel`);
+        tokens.remove(token);
+    });
   });
 });
 
