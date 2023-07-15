@@ -1,4 +1,14 @@
 const socket = io();
+
+const converter = new showdown.Converter({
+    "emoji": "true",
+    "simpleLineBreaks": "true",
+    "tables": "true",
+    "noHeaderId": "true",
+    "openLinksInNewWindow": "true",
+    "simplifiedAutoLink": "true"
+});
+
 const form = $("form");
 const password = $("#password");
 
@@ -23,6 +33,12 @@ socket.on("login", (token) => {
     });
 
     function loadFolderAndBlogsTab() {
+        $("article")
+            .empty()
+            .append("<h1>Admin Pannel</h1>")
+            .append("<hr>")
+            .append("<br id='last-br'>");
+
         const foldersTitle = $("<h2>Dossiers</h2>");
         const foldersAdd = $(`<form id="folder-add-form">
                                     <label>Créer un dossier : </label>
@@ -37,7 +53,7 @@ socket.on("login", (token) => {
                                  </form>`);
         const blogsGrid = $("<div id='grid-blogs' class='blog-grid'></div>");
 
-        const lastBr = $("#last-br")
+        const lastBr = $("#last-br");
         lastBr.before(foldersTitle);
         lastBr.before(foldersAdd);
         lastBr.before("<br>");
@@ -66,6 +82,57 @@ socket.on("login", (token) => {
             alert("Une erreur s'est produite :\n\n" + res);
         }
     });
+
+    function loadBlogEditor(data) {
+        $("article")
+            .empty()
+            .append("<h1>Admin Pannel</h1>")
+            .append("<hr>")
+            .append("<br id='last-br'>");
+
+        const editorForm = $("<form id='editor-form'>");
+        const lastBr = $("#last-br");
+        lastBr.before(editorForm);
+
+        const titleInput = $(`<h1><label for="title-input">Titre : </label><input style="width: calc(100% - 15px)" type="text" id="title-input" value="${data.title}" required></h1>`);
+        editorForm.append(titleInput);
+
+        const textInput = $("<div id='editor'></div><br>");
+        const textAreaCss = {"height": "auto", "min-height": "250px"};
+        textInput.css(textAreaCss);
+        editorForm.append(textInput);
+
+        const authorInput = $(`<label for="author-input">Auteur : </label><input type="text" id="author-input" value="${data.author}"><br><br>`);
+        editorForm.append(authorInput);
+
+        const saveInput = $("<input type='submit' value='Sauvgarder'>");
+        editorForm.append(saveInput);
+
+        const quill = new Quill("#editor", {
+            modules: {
+                toolbar: [
+                    [{"header": [1, 2, 3, false]}],
+                    ["bold", "italic", "strike"],
+                    ["blockquote", "code-block"],
+                    [{"list": "ordered"}, {"list": "bullet"}],
+                    [{"indent": "-1"}, {"indent": "+1"}],
+                    ["link", "image"]
+                ]
+            },
+            theme: 'snow'
+        });
+
+        $(textInput.children()[0]).css(textAreaCss);
+
+        quill.setContents(quill.clipboard.convert(converter.makeHtml(data.content)), "silent");
+
+        editorForm.on("submit", (e) => {
+           e.preventDefault();
+           const title = $("#title-input").val();
+           const content = quill.root.innerHTML;
+           const author = $("#author-input").val();
+        });
+    }
 
     function firstLoad() {
         $("#folder-add-form").hide();
