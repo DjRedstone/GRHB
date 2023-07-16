@@ -1,11 +1,3 @@
-const converter = new showdown.Converter({
-    "emoji": "true",
-    "simpleLineBreaks": "true",
-    "tables": "true",
-    "noHeaderId": "true",
-    "openLinksInNewWindow": "true",
-    "simplifiedAutoLink": "true"
-});
 
 function redirect(path) {
     const href = document.location.href;
@@ -48,8 +40,7 @@ function load(type) {
         }
 
         if (typeof themes === "string") {
-            const textArticle = converter.makeHtml(themes);
-            $("article").append(`<hr><div id="article">${textArticle}</div>`);
+            $("article").append(`<hr><div id="article">${themes}</div>`);
             const images = $("#article img");
             for (let i = 0; i < images.length; i++) {
                 const image = $(images[i]);

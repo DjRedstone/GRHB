@@ -96,7 +96,7 @@ article hr {
     border-top: 1px solid #444;
     padding-bottom: 25px;
 }
-article p, article li {
+article p, article li, article blockquote {
     font-size: 1.5em;
 }
 article a {
@@ -118,7 +118,7 @@ article blockquote {
     padding: 0 1em;
     position: relative;
 }
-article blockquote p::before {
+article blockquote::before {
     content: "";
     display: block;
     position: absolute;

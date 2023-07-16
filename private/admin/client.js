@@ -1,14 +1,5 @@
 const socket = io();
 
-const converter = new showdown.Converter({
-    "emoji": "true",
-    "simpleLineBreaks": "true",
-    "tables": "true",
-    "noHeaderId": "true",
-    "openLinksInNewWindow": "true",
-    "simplifiedAutoLink": "true"
-});
-
 const form = $("form");
 const password = $("#password");
 
@@ -121,7 +112,7 @@ socket.on("login", (token) => {
             modules: {
                 toolbar: [
                     [{"header": [1, 2, 3, false]}],
-                    ["bold", "italic", "strike"],
+                    ["bold", "italic", "underline", "strike"],
                     ["blockquote", "code-block"],
                     [{"list": "ordered"}, {"list": "bullet"}],
                     [{"indent": "-1"}, {"indent": "+1"}],
@@ -133,18 +124,14 @@ socket.on("login", (token) => {
 
         $(textInput.children()[0]).css(textAreaCss);
 
-        quill.setContents(quill.clipboard.convert(converter.makeHtml(data.content)), "silent");
+        quill.setContents(quill.clipboard.convert(data.content), "silent")
 
         editorForm.on("submit", (e) => {
             e.preventDefault();
 
             const title = $("#title-input").val();
-            const content = converter.makeMarkdown(quill.root.innerHTML);
+            const content = quill.root.innerHTML;
             const author = $("#author-input").val();
-
-            console.log("Title :", title);
-            console.log("Content :", content);
-            console.log("Author :", author)
 
             if (editing) {
                 const articlePath = data.absolute_path.split("/")[data.absolute_path.split("/").length-1];
@@ -217,17 +204,17 @@ socket.on("login", (token) => {
                     title = title.slice(0, titleLength-1) + "...";
                 }
                 if (data.type === "folder") {
-                    foldersGrid.append(`<div id="${dataPath}" class="admin-grid-item" >
+                    foldersGrid.append(`<div id="folder-${dataPath}" class="admin-grid-item" >
                                         <span>${title}</span>
                                         <div>
-                                            <button id="${dataPath}-edit-button">Modifier</button>
-                                            <button id="${dataPath}-delete-button">Supprimer</button>
+                                            <button id="folder-${dataPath}-edit-button">Modifier</button>
+                                            <button id="folder-${dataPath}-delete-button">Supprimer</button>
                                         </div>
                                     </div>`);
-                    $(`#${dataPath}`).on("click", (e) => {
+                    $(`#folder-${dataPath}`).on("click", (e) => {
                         e.preventDefault();
                         // EDIT FOLDER
-                        if ($(`#${dataPath}-edit-button:hover`)[0] === $(`#${dataPath}-edit-button`)[0]) {
+                        if ($(`#folder-${dataPath}-edit-button:hover`)[0] === $(`#folder-${dataPath}-edit-button`)[0]) {
                             const newName = window.prompt("Entrez un nouveau nom", data.title);
                             if (!newName) {
                                 alert("Votre modification n'a pas été prise en compte");
@@ -235,7 +222,7 @@ socket.on("login", (token) => {
                                 socket.emit("edit-folder", token, path + "." + dataPath, newName);
                             }
                         // DELETE FOLDER
-                        } else if ($(`#${dataPath}-delete-button:hover`)[0] === $(`#${dataPath}-delete-button`)[0]) {
+                        } else if ($(`#folder-${dataPath}-delete-button:hover`)[0] === $(`#folder-${dataPath}-delete-button`)[0]) {
                             const result = window.confirm(`Vous confirmez la suppression du dossier "${data.title}"`);
                             if (result) {
                                 socket.emit("delete-folder", token, path + "." + dataPath);
@@ -247,20 +234,20 @@ socket.on("login", (token) => {
                         }
                     });
                 } else {
-                    blogsGrid.append(`<div id="${dataPath}" class="admin-grid-item" >
+                    blogsGrid.append(`<div id="article-${dataPath}" class="admin-grid-item" >
                                       <span>${title}</span>
                                       <div>
-                                          <button id="${dataPath}-edit-button">Modifier</button>
-                                          <button id="${dataPath}-delete-button">Supprimer</button>
+                                          <button id="article-${dataPath}-edit-button">Modifier</button>
+                                          <button id="article-${dataPath}-delete-button">Supprimer</button>
                                        </div>
                                   </div>`);
-                    $(`#${dataPath}`).on("click", (e) => {
+                    $(`#article-${dataPath}`).on("click", (e) => {
                         e.preventDefault();
                         // EDIT ARTICLE
-                        if ($(`#${dataPath}-edit-button:hover`)[0] === $(`#${dataPath}-edit-button`)[0]) {
+                        if ($(`#article-${dataPath}-edit-button:hover`)[0] === $(`#article-${dataPath}-edit-button`)[0]) {
                             loadBlogEditor(data);
                             // DELETE ARTICLE
-                        } else if ($(`#${dataPath}-delete-button:hover`)[0] === $(`#${dataPath}-delete-button`)[0]) {
+                        } else if ($(`#article-${dataPath}-delete-button:hover`)[0] === $(`#article-${dataPath}-delete-button`)[0]) {
                             const result = window.confirm(`Vous confirmez la suppression du dossier "${data.title}"`);
                             if (result) {
                                 socket.emit("delete-article", token, path + "." + dataPath);
