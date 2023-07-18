@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@web-std/file": "^3.0.2",
     "body-parser": "^1.20.0",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
@@ -21,6 +22,7 @@
     "rss": "^1.2.2",
     "rss-parser": "^3.13.0",
     "socket.io": "^4.6.1",
+    "socket.io-stream": "^0.9.1",
     "xml": "^1.0.1"
   }
 }

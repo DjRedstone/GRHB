@@ -5,7 +5,12 @@ const http = require("http").createServer(app);
 const path = require("path");
 const port = 3000;
 
-const io = require("socket.io")(http);
+const { Server } = require("socket.io");
+const io = new Server({
+    maxHttpBufferSize: 1e8 // 100 MB
+}).listen(http);
+
+const fs = require("fs");
 
 const nodemailer = require("nodemailer");
 const bp = require("body-parser");
@@ -68,6 +73,20 @@ app.get("/admin/", (req, res) => {
 
 function randomID() {
   return Math.random().toString(36).substr(2, 9);
+}
+
+function dataURLtoFile(dataurl, callback) {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[arr.length - 1])
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    const filename = `${randomID()}.${mime.split("/")[1]}`;
+    fs.writeFileSync(`./public/feed-data/${filename}`, u8arr);
+    callback(filename);
 }
 
 console.log();
@@ -160,6 +179,13 @@ io.on("connection", (socket) => {
         } catch (e) {
             socket.emit("delete-article", e);
         }
+    });
+
+    socket.on("add-image-to-feed-data", (askedToken, imageToken, url) => {
+        if (askedToken !== token) return
+        dataURLtoFile(url, (filename) => {
+            socket.emit("add-image-to-feed-data", imageToken, filename);
+        });
     });
 
     socket.on("disconnect", () => {

@@ -1,5 +1,7 @@
 const socket = io();
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 const form = $("form");
 const password = $("#password");
 
@@ -83,6 +85,7 @@ socket.on("login", (token) => {
     socket.on("edit-folder", afterManaging);
     socket.on("delete-folder", afterManaging);
 
+    let imagesInChange;
     function loadBlogEditor(data, editing = true) {
         $("article")
             .empty()
@@ -126,8 +129,25 @@ socket.on("login", (token) => {
 
         quill.setContents(quill.clipboard.convert(data.content), "silent")
 
-        editorForm.on("submit", (e) => {
+        editorForm.on("submit", async (e) => {
             e.preventDefault();
+
+            const imgs = $("#editor").find("img");
+            imagesInChange = {};
+            for (let n = 0; n < imgs.length; n++) {
+                const img = imgs[n];
+                const imgData = $(img);
+                const src = imgData.attr("src");
+                if (!src.startsWith("/feed-data/")) {
+                    imgData.attr("id", `image-${n}`);
+                    socket.emit("add-image-to-feed-data", token, n, src);
+                    imagesInChange[n] = n;
+                }
+            }
+
+            while (Object.values(imagesInChange).length !== 0) {
+                await delay(100);
+            }
 
             const title = $("#title-input").val();
             const content = quill.root.innerHTML;
@@ -141,6 +161,11 @@ socket.on("login", (token) => {
             }
         });
     }
+
+    socket.on("add-image-to-feed-data", (imageKey, filename) => {
+       delete imagesInChange[imageKey];
+       $(`#image-${imageKey}`).attr("src", `/feed-data/${filename}`);
+    });
 
     socket.on("create-article", afterManaging);
     socket.on("edit-article", afterManaging);
