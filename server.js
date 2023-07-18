@@ -89,7 +89,19 @@ function dataURLtoFile(dataurl, callback) {
     callback(filename);
 }
 
-console.log();
+(async function cleanFeedData() {
+    console.log("Cleaning feed data folder...");
+    let n = 0;
+    const feedString = feedManager.getDataAsString();
+    for (const file of fs.readdirSync("./public/feed-data/")) {
+        if (!feedString.includes(file)) {
+            console.log(`${file} is not used. Deleting...`);
+            await fs.promises.unlink(`./public/feed-data/${file}`);
+            n ++;
+        }
+    }
+    console.log(`Cleaning finished : ${n} fils deleted`);
+})();
 
 const tokens = [];
 
@@ -230,5 +242,5 @@ app.get("*", (req, res) => {
 });
 
 http.listen(port, () => {
-  console.log(`App server is running on port ${port}`);
+  console.log(`--> App server is running on port ${port}`);
 });

@@ -22,6 +22,10 @@ class FeedManager {
             this.data = require(path);
     }
 
+    getDataAsString() {
+        return JSON.stringify(this.data);
+    }
+
     update() {
         console.log("Updating feed.js...");
         fs.writeFileSync(this.path, JSON.stringify(this.data, null, 4));
