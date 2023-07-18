@@ -11,10 +11,11 @@ form.on("submit", (e) => {
 });
 
 let feedData;
+
 socket.on("login", (token) => {
     if (token === "wrong password") {
         alert("Le mot de passe est incorrect !");
-        return
+        return;
     }
     form.remove();
 
@@ -29,7 +30,7 @@ socket.on("login", (token) => {
         if (res === "OK") {
             feedData = data;
         } else {
-            alert("Une erreur est apparu :\n\n" + res);
+            alert("Une erreur est apparue :\n\n" + res);
         }
         loadFolderAndBlogsTab();
         loadFoldersAndBlogs(getListFromPath(path));
@@ -74,7 +75,7 @@ socket.on("login", (token) => {
             e.preventDefault();
             loadBlogEditor({
                 "title": "Titre de l'article",
-                "content": "Commnez à écrire ici...",
+                "content": "Commencez à écrire ici...",
                 "date": Date.now(),
                 "author": "Admin"
             }, false);
@@ -86,6 +87,7 @@ socket.on("login", (token) => {
     socket.on("delete-folder", afterManaging);
 
     let imagesInChange;
+
     function loadBlogEditor(data, editing = true) {
         $("article")
             .empty()
@@ -101,24 +103,24 @@ socket.on("login", (token) => {
         editorForm.append(titleInput);
 
         const textInput = $("<div id='editor'></div><br>");
-        const textAreaCss = {"height": "auto", "min-height": "250px"};
+        const textAreaCss = { "height": "auto", "min-height": "250px" };
         textInput.css(textAreaCss);
         editorForm.append(textInput);
 
         const authorInput = $(`<label for="author-input">Auteur : </label><input type="text" id="author-input" value="${data.author}"><br><br>`);
         editorForm.append(authorInput);
 
-        const saveInput = $(`<input type="submit" value="${editing ? "Sauvgarder" : "Créer"}">`);
+        const saveInput = $(`<input type="submit" value="${editing ? "Sauvegarder" : "Créer"}">`);
         editorForm.append(saveInput);
 
         const quill = new Quill("#editor", {
             modules: {
                 toolbar: [
-                    [{"header": [1, 2, 3, false]}],
+                    [{ "header": [1, 2, 3, false] }],
                     ["bold", "italic", "underline", "strike"],
                     ["blockquote", "code-block"],
-                    [{"list": "ordered"}, {"list": "bullet"}],
-                    [{"indent": "-1"}, {"indent": "+1"}],
+                    [{ "list": "ordered" }, { "list": "bullet" }],
+                    [{ "indent": "-1" }, { "indent": "+1" }],
                     ["link", "image"]
                 ]
             },
@@ -127,7 +129,7 @@ socket.on("login", (token) => {
 
         $(textInput.children()[0]).css(textAreaCss);
 
-        quill.setContents(quill.clipboard.convert(data.content), "silent")
+        quill.setContents(quill.clipboard.convert(data.content), "silent");
 
         editorForm.on("submit", async (e) => {
             e.preventDefault();
@@ -154,8 +156,8 @@ socket.on("login", (token) => {
             const author = $("#author-input").val();
 
             if (editing) {
-                const articlePath = data.absolute_path.split("/")[data.absolute_path.split("/").length-1];
-                socket.emit("edit-article", token, path + "." + articlePath, title, content, new Date(data.date), author);
+                const articlePath = data.absolute_path.split("/").pop();
+                socket.emit("edit-article", token, `${path}.${articlePath}`, title, content, new Date(data.date), author);
             } else {
                 socket.emit("create-article", token, path, title, content, Date.now(), author);
             }
@@ -163,8 +165,8 @@ socket.on("login", (token) => {
     }
 
     socket.on("add-image-to-feed-data", (imageKey, filename) => {
-       delete imagesInChange[imageKey];
-       $(`#image-${imageKey}`).attr("src", `/feed-data/${filename}`);
+        delete imagesInChange[imageKey];
+        $(`#image-${imageKey}`).attr("src", `/feed-data/${filename}`);
     });
 
     socket.on("create-article", afterManaging);
@@ -191,15 +193,17 @@ socket.on("login", (token) => {
         const pathList = path.split(".");
         let data = feedData;
         for (let i = 0; i < pathList.length; i++) {
-            if (i === 0)
+            if (i === 0) {
                 data = data[pathList[0]];
-            else
+            } else {
                 data = data[pathList[i]].content;
+            }
         }
         return data;
     }
 
     let path = "";
+
     function loadFoldersAndBlogs(list) {
         const foldersGrid = $("#grid-folders");
         const blogsGrid = $("#grid-blogs");
@@ -213,23 +217,23 @@ socket.on("login", (token) => {
             foldersGrid.append("<div id='go-back-folder' class='admin-grid-item'><span>...</span></div>");
             $("#go-back-folder").on("click", (e) => {
                 e.preventDefault();
-                path = path.split(".").slice(0, path.split(".").length-1).join(".");
+                path = path.split(".").slice(0, -1).join(".");
                 loadFoldersAndBlogs(getListFromPath(path));
             });
 
             const listKeys = Object.keys(list);
             listKeys.sort((a, b) => {
-                return ((list[a].date !== undefined && list[b].date !== undefined) ? list[b].date.localeCompare(list[a].date) : 0)
+                return ((list[a].date !== undefined && list[b].date !== undefined) ? list[b].date.localeCompare(list[a].date) : 0);
             });
             for (const dataPath of listKeys) {
                 const data = list[dataPath];
                 const titleLength = 50;
                 let title = data.title;
                 if (title.length >= titleLength) {
-                    title = title.slice(0, titleLength-1) + "...";
+                    title = title.slice(0, titleLength - 1) + "...";
                 }
                 if (data.type === "folder") {
-                    foldersGrid.append(`<div id="folder-${dataPath}" class="admin-grid-item" >
+                    foldersGrid.append(`<div id="folder-${dataPath}" class="admin-grid-item">
                                         <span>${title}</span>
                                         <div>
                                             <button id="folder-${dataPath}-edit-button">Modifier</button>
@@ -244,22 +248,22 @@ socket.on("login", (token) => {
                             if (!newName) {
                                 alert("Votre modification n'a pas été prise en compte");
                             } else {
-                                socket.emit("edit-folder", token, path + "." + dataPath, newName);
+                                socket.emit("edit-folder", token, `${path}.${dataPath}`, newName);
                             }
-                        // DELETE FOLDER
+                            // DELETE FOLDER
                         } else if ($(`#folder-${dataPath}-delete-button:hover`)[0] === $(`#folder-${dataPath}-delete-button`)[0]) {
                             const result = window.confirm(`Vous confirmez la suppression du dossier "${data.title}"`);
                             if (result) {
-                                socket.emit("delete-folder", token, path + "." + dataPath);
+                                socket.emit("delete-folder", token, `${path}.${dataPath}`);
                             }
-                        // GOTO FOLDER
+                            // GOTO FOLDER
                         } else {
-                            path += "." + dataPath;
+                            path += `.${dataPath}`;
                             loadFoldersAndBlogs(getListFromPath(path));
                         }
                     });
                 } else {
-                    blogsGrid.append(`<div id="article-${dataPath}" class="admin-grid-item" >
+                    blogsGrid.append(`<div id="article-${dataPath}" class="admin-grid-item">
                                       <span>${title}</span>
                                       <div>
                                           <button id="article-${dataPath}-edit-button">Modifier</button>
@@ -275,7 +279,7 @@ socket.on("login", (token) => {
                         } else if ($(`#article-${dataPath}-delete-button:hover`)[0] === $(`#article-${dataPath}-delete-button`)[0]) {
                             const result = window.confirm(`Vous confirmez la suppression du dossier "${data.title}"`);
                             if (result) {
-                                socket.emit("delete-article", token, path + "." + dataPath);
+                                socket.emit("delete-article", token, `${path}.${dataPath}`);
                             }
                         }
                     });
