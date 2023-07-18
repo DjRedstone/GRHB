@@ -75,21 +75,7 @@ function randomID() {
   return Math.random().toString(36).substr(2, 9);
 }
 
-function dataURLtoFile(dataurl, callback) {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[arr.length - 1])
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    const filename = `${randomID()}.${mime.split("/")[1]}`;
-    fs.writeFileSync(`./public/feed-data/${filename}`, u8arr);
-    callback(filename);
-}
-
-(async function cleanFeedData() {
+async function cleanFeedData() {
     console.log("Cleaning feed data folder...");
     let n = 0;
     const feedString = feedManager.getDataAsString();
@@ -101,7 +87,23 @@ function dataURLtoFile(dataurl, callback) {
         }
     }
     console.log(`Cleaning finished : ${n} fils deleted`);
-})();
+}
+cleanFeedData();
+
+function dataURLtoFile(dataurl, callback) {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[arr.length - 1])
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    const filename = `${randomID()}.${mime.split("/")[1]}`;
+    fs.writeFileSync(`./public/feed-data/${filename}`, u8arr);
+    cleanFeedData();
+    callback(filename);
+}
 
 const tokens = [];
 
