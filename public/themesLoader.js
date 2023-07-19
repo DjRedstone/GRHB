@@ -61,6 +61,9 @@ function load(type) {
         } else {
             const themesPaths = Object.keys(themes);
             themesPaths.sort((a, b) => {
+                return b.localeCompare(a);
+            });
+            themesPaths.sort((a, b) => {
                 return themes[a].date !== undefined && themes[b].date !== undefined
                     ? themes[b].date.localeCompare(themes[a].date)
                     : 0;
