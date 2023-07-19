@@ -1,5 +1,5 @@
 node_modules
 .env
+.idea
 public/feed.json
-.replit
-replit.nix
+public/feed-data/*
