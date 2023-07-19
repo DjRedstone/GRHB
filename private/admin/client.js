@@ -269,7 +269,6 @@ socket.on("login", (token) => {
             const iconData = $(icon[0].shadowRoot.querySelector("div"));
             iconData.css({display: "grid", "justify-items": "center", "align-items": "center", width: "100%", height: "100%"});
             $("#go-back-icon").on("click", () => {
-                console.log("go back")
                 path = path.split(".").slice(0, -1).join(".");
                 loadFoldersAndBlogs(getListFromPath(path));
             });
