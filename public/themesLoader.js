@@ -23,8 +23,10 @@ function load(type) {
         }
 
         if (beforeThemes !== undefined) {
-            const icon = $("<img id='go-back-icon' src='https://api.iconify.design/ri:arrow-go-back-fill.svg'>");
+            const icon = $("<lord-icon id='go-back-icon' src='https://cdn.lordicon.com/jxwksgwv.json' trigger='hover' state='hover-2'></lord-icon>");
             $("article").append(icon);
+            const iconData = $(icon[0].shadowRoot.querySelector("div"));
+            iconData.css({display: "grid", "justify-items": "center", "align-items": "center", width: "100%", height: "100%"});
             const actualTheme = beforeThemes[path[path.length - 1]];
             $("#title").text(actualTheme.title);
             $("title").text("GRHB | " + actualTheme.title);

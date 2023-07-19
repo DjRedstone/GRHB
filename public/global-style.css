@@ -214,6 +214,7 @@ table {
     background-color: #EEE;
     border-radius: 50%;
     cursor: pointer;
+    transform: rotate(180deg);
     transition: background-color .25s ease-in-out;
 }
 #go-back-icon:hover {
@@ -363,18 +364,23 @@ footer {
 .admin-grid-item div {
     display: grid;
     grid-template: "a b";
+    grid-gap: 10px;
     margin-right: 10px;
 }
-.admin-grid-item button {
-    font-size: 1em;
+.admin-grid-item lord-icon {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    padding: 2px 2px;
+    background-color: #F0F0F0;
     border: 1px solid black;
     border-radius: 10px;
-    padding: 1% 1%;
-    filter: drop-shadow(0 0 0.5em white);
-    transition: filter .5s;
-}
-.admin-grid-item button:hover {
-    padding: 1% 2%;
-    font-size: 1.5em;
     cursor: pointer;
+    transition: filter .25s ease-in-out;
+}
+.admin-grid-item lord-icon:hover {
+    filter: drop-shadow(0 0 .5em white);
+}
+.admin-grid-item lord-icon svg {
+    opacity: 0;
 }

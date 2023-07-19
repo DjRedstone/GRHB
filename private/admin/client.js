@@ -95,8 +95,21 @@ socket.on("login", (token) => {
             .append("<hr>")
             .append("<br id='last-br'>");
 
-        const editorForm = $("<form id='editor-form'>");
         const lastBr = $("#last-br");
+
+        const cancelIcon = $("<lord-icon id='go-back-icon' src='https://cdn.lordicon.com/jxwksgwv.json' trigger='hover' state='hover-2'></lord-icon>");
+        lastBr.before(cancelIcon);
+        const iconData = $(cancelIcon[0].shadowRoot.querySelector("div"));
+        iconData.css({display: "grid", "justify-items": "center", "align-items": "center", width: "100%", height: "100%"});
+        cancelIcon.on("click", () => {
+           const res = window.confirm("Vous confirmez l'abandon des modifications de cet article");
+           if (res) {
+               loadFolderAndBlogsTab();
+               loadFoldersAndBlogs(getListFromPath(path));
+           }
+        });
+
+        const editorForm = $("<form id='editor-form'>");
         lastBr.before(editorForm);
 
         const titleInput = $(`<h1><label for="title-input">Titre : </label><input style="width: calc(100% - 15px)" type="text" id="title-input" value="${data.title}" required></h1>`);
@@ -236,10 +249,16 @@ socket.on("login", (token) => {
                     foldersGrid.append(`<div id="folder-${dataPath}" class="admin-grid-item">
                                         <span>${title}</span>
                                         <div>
-                                            <button id="folder-${dataPath}-edit-button">Modifier</button>
-                                            <button id="folder-${dataPath}-delete-button">Supprimer</button>
+                                            <lord-icon id="folder-${dataPath}-edit-button" src="https://cdn.lordicon.com/dycatgju.json" trigger="hover"></lord-icon>
+                                            <lord-icon id="folder-${dataPath}-delete-button" src="https://cdn.lordicon.com/jmkrnisz.json" trigger="hover"></lord-icon>
                                         </div>
                                     </div>`);
+                    const editIcon = $(`#folder-${dataPath}-edit-button`);
+                    const deleteIcon = $(`#folder-${dataPath}-delete-button`);
+                    for (const icon of [editIcon, deleteIcon]) {
+                        const iconData = $(icon[0].shadowRoot.querySelector("div"));
+                        iconData.css({display: "grid", "justify-items": "center", "align-items": "center", width: "100%", height: "100%"});
+                    }
                     $(`#folder-${dataPath}`).on("click", (e) => {
                         e.preventDefault();
                         // EDIT FOLDER
@@ -266,10 +285,16 @@ socket.on("login", (token) => {
                     blogsGrid.append(`<div id="article-${dataPath}" class="admin-grid-item">
                                       <span>${title}</span>
                                       <div>
-                                          <button id="article-${dataPath}-edit-button">Modifier</button>
-                                          <button id="article-${dataPath}-delete-button">Supprimer</button>
+                                          <lord-icon id="article-${dataPath}-edit-button" src="https://cdn.lordicon.com/dycatgju.json" trigger="hover"></lord-icon>
+                                          <lord-icon id="article-${dataPath}-delete-button" src="https://cdn.lordicon.com/jmkrnisz.json" trigger="hover"></lord-icon>
                                        </div>
                                   </div>`);
+                    const editIcon = $(`#article-${dataPath}-edit-button`);
+                    const deleteIcon = $(`#article-${dataPath}-delete-button`);
+                    for (const icon of [editIcon, deleteIcon]) {
+                        const iconData = $(icon[0].shadowRoot.querySelector("div"));
+                        iconData.css({display: "grid", "justify-items": "center", "align-items": "center", width: "100%", height: "100%"});
+                    }
                     $(`#article-${dataPath}`).on("click", (e) => {
                         e.preventDefault();
                         // EDIT ARTICLE
