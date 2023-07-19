@@ -1,8 +1,18 @@
+/**
+ * Create URL to redirect
+ * @param path {string} Second part of the url
+ * @returns {string} URL
+ */
 function redirect(path) {
     const href = document.location.href;
     return href + (href[href.length - 1] === "/" ? "" : "/") + path;
 }
 
+/**
+ * Get all element from the path
+ * @param path {string}
+ * @returns {[]}
+ */
 function splitPath(path) {
     const r = path.split("/");
     r.shift();
@@ -11,17 +21,24 @@ function splitPath(path) {
     return r;
 }
 
+/**
+ * Load articles and folders from part
+ * @param type {string} "newsletters", "events" or "themes"
+ */
 function load(type) {
+    // Geting feed data
     $.getJSON("/feed.json", (data) => {
         let themes = data[type];
         let beforeThemes;
         const path = splitPath(document.location.pathname);
 
+        // Loading path data
         for (let i = 0; i < path.length; i++) {
             if (i + 1 === path.length) beforeThemes = themes;
             themes = themes[path[i]].content;
         }
 
+        // Creating go back button and edit title
         if (beforeThemes !== undefined) {
             const icon = $("<lord-icon id='go-back-icon' src='https://cdn.lordicon.com/jxwksgwv.json' trigger='hover' state='hover-2'></lord-icon>");
             $("article").append(icon);
@@ -39,7 +56,9 @@ function load(type) {
             });
         }
 
+        // If is an article
         if (typeof themes === "string") {
+            // Loading article
             $("article").append(`<hr><div id="article">${themes}</div>`);
             const images = $("#article img");
             for (let i = 0; i < images.length; i++) {
@@ -59,6 +78,8 @@ function load(type) {
                 })} par ${article.author}.</p>`
             );
         } else {
+            // Loading articles and folders
+            // Sorting elements
             const themesPaths = Object.keys(themes);
             themesPaths.sort((a, b) => {
                 return b.localeCompare(a);
@@ -68,6 +89,7 @@ function load(type) {
                     ? themes[b].date.localeCompare(themes[a].date)
                     : 0;
             });
+            // Adding each element
             for (const themePath of themesPaths) {
                 const theme = themes[themePath];
 
@@ -83,6 +105,7 @@ function load(type) {
             }
         }
 
+        // Cleaning grids
         if (document.getElementById("grid-list").children.length === 0) {
             $("#list-hr").remove();
             $("#grid-list").remove();

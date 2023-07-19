@@ -1,6 +1,12 @@
+// Importing fs and moment
 const fs = require("fs");
 const moment = require("moment");
 
+/**
+ * Transform string to a string who can be use in URL
+ * @param name {string} Original string
+ * @returns {string}
+ */
 function nameToPath(name) {
     return name
         .toLowerCase()
@@ -9,6 +15,11 @@ function nameToPath(name) {
 }
 
 class FeedManager {
+    /**
+     * Create feed manager
+     * @param path {string} Path to feed file
+     * @param originalData {JSON} Data when feed not exist
+     */
     constructor(path, originalData) {
         this.path = path;
         this.data = originalData;
@@ -21,16 +32,28 @@ class FeedManager {
         }
     }
 
+    /**
+     * Stringify feed data
+     * @returns {string}
+     */
     getDataAsString() {
         return JSON.stringify(this.data);
     }
 
+    /**
+     * Update feed file
+     */
     update() {
-        console.log("Updating feed.js...");
+        console.log("Updating feed file...");
         fs.writeFileSync(this.path, JSON.stringify(this.data, null, 4));
         console.log("Update complete!");
     }
 
+    /**
+     * Get all articles from feed data by part
+     * @param object {JSON} Original data
+     * @returns {[]}
+     */
     getAllPosts(object) {
         let res = [];
         for (const value of Object.values(object)) {
@@ -43,6 +66,10 @@ class FeedManager {
         return res;
     }
 
+    /**
+     * Get all articles from feed data
+     * @returns {[]}
+     */
     getAllPostsFromFeed() {
         const res = [];
         for (const categorie of Object.keys(this.data)) {
@@ -51,6 +78,11 @@ class FeedManager {
         return res;
     }
 
+    /**
+     * Get articles from path
+     * @param path {string}
+     * @returns {JSON}
+     */
     getListFromPath(path) {
         const pathList = path.split(".");
         let data = this.data;
@@ -64,6 +96,11 @@ class FeedManager {
         return data;
     }
 
+    /**
+     * Check if an element exist
+     * @param path {string}
+     * @returns {boolean}
+     */
     checkIfExist(path) {
         try {
             this.getListFromPath(path);
@@ -73,6 +110,11 @@ class FeedManager {
         }
     }
 
+    /**
+     * Create folder in feed data
+     * @param path {string}
+     * @param name {string} Folder name
+     */
     createFolder(path, name) {
         if (this.checkIfExist(`${path}.${nameToPath(name)}`)) {
             throw "Folder already exists";
@@ -87,6 +129,11 @@ class FeedManager {
         this.update();
     }
 
+    /**
+     * Edit folder name
+     * @param path {string} Path to folder
+     * @param newName {string} New folder name
+     */
     editFolder(path, newName) {
         if (!this.checkIfExist(path)) {
             throw "Folder does not exist";
@@ -106,6 +153,10 @@ class FeedManager {
         this.update();
     }
 
+    /**
+     * Delete folder
+     * @param path {string} Path to folder
+     */
     deleteFolder(path) {
         if (!this.checkIfExist(path)) {
             throw "Folder does not exist";
@@ -119,6 +170,14 @@ class FeedManager {
         this.update();
     }
 
+    /**
+     * Create article
+     * @param path {string}
+     * @param name {string}
+     * @param content {string}
+     * @param date {date}
+     * @param author {string}
+     */
     createArticle(path, name, content, date, author) {
         if (this.checkIfExist(`${path}.${nameToPath(name)}`)) {
             throw "Article already exists";
@@ -136,6 +195,14 @@ class FeedManager {
         this.update();
     }
 
+    /**
+     * Edit article
+     * @param path {string} Path to article
+     * @param name {string}
+     * @param content {string}
+     * @param date {date}
+     * @param author {string}
+     */
     editArticle(path, name, content, date, author) {
         if (!this.checkIfExist(path)) {
             throw "Article does not exist";
@@ -160,6 +227,10 @@ class FeedManager {
         this.update();
     }
 
+    /**
+     * Delete article
+     * @param path {string} Path to article
+     */
     deleteArticle(path) {
         if (!this.checkIfExist(path)) {
             throw "Article does not exist";
@@ -174,4 +245,5 @@ class FeedManager {
     }
 }
 
+// Export class
 module.exports = FeedManager;

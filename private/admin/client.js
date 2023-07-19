@@ -1,15 +1,20 @@
+// Importing socket.io
 const socket = io();
 
+// Creating delay function
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+// Geting usefull elements
 const form = $("form");
 const password = $("#password");
 
+// Trying connected to admin panel
 form.on("submit", (e) => {
     e.preventDefault();
     socket.emit("login", password.val());
 });
 
+// Global var
 let feedData;
 
 socket.on("login", (token) => {
@@ -17,6 +22,7 @@ socket.on("login", (token) => {
         alert("Le mot de passe est incorrect !");
         return;
     }
+    // Login succes
     form.remove();
 
     loadFolderAndBlogsTab();
@@ -26,6 +32,11 @@ socket.on("login", (token) => {
         firstLoad();
     });
 
+    /**
+     * Inform from recived packages
+     * @param res "OK" or error
+     * @param data {JSON} Feed data if no error
+     */
     function afterManaging(res, data) {
         if (res === "OK") {
             feedData = data;
@@ -43,6 +54,7 @@ socket.on("login", (token) => {
             .append("<hr>")
             .append("<br id='last-br'>");
 
+        // Adding folders and articles grids
         const foldersTitle = $("<h2>Dossiers</h2>");
         const foldersAdd = $(`<form id="folder-add-form">
                                     <label>Créer un dossier : </label>
@@ -57,6 +69,7 @@ socket.on("login", (token) => {
                                  </form>`);
         const blogsGrid = $("<div id='grid-blogs' class='blog-grid'></div>");
 
+        // Appending
         const lastBr = $("#last-br");
         lastBr.before(foldersTitle);
         lastBr.before(foldersAdd);
@@ -67,10 +80,12 @@ socket.on("login", (token) => {
         lastBr.before("<br>");
         lastBr.before(blogsGrid);
 
+        // Creating folder
         foldersAdd.on("submit", (e) => {
             e.preventDefault();
             socket.emit("create-folder", token, path, $("#folder-add-input").val());
         });
+        // Creating article
         blogsAdd.on("submit", (e) => {
             e.preventDefault();
             loadBlogEditor({
@@ -86,8 +101,14 @@ socket.on("login", (token) => {
     socket.on("edit-folder", afterManaging);
     socket.on("delete-folder", afterManaging);
 
+    // Global var
     let imagesInChange;
 
+    /**
+     * Load data on editor tab
+     * @param data {JSON} Article data
+     * @param editing {boolean} Is editing
+     */
     function loadBlogEditor(data, editing = true) {
         $("article")
             .empty()
@@ -97,6 +118,7 @@ socket.on("login", (token) => {
 
         const lastBr = $("#last-br");
 
+        // Cancel editing button
         const cancelIcon = $("<lord-icon id='go-back-icon' src='https://cdn.lordicon.com/jxwksgwv.json' trigger='hover' state='hover-2'></lord-icon>");
         lastBr.before(cancelIcon);
         const iconData = $(cancelIcon[0].shadowRoot.querySelector("div"));
@@ -109,6 +131,7 @@ socket.on("login", (token) => {
            }
         });
 
+        // Editing editor
         const editorForm = $("<form id='editor-form'>");
         lastBr.before(editorForm);
 
@@ -144,9 +167,11 @@ socket.on("login", (token) => {
 
         quill.setContents(quill.clipboard.convert(data.content), "silent");
 
+        // On saving
         editorForm.on("submit", async (e) => {
             e.preventDefault();
 
+            // Saving image in editor
             const imgs = $("#editor").find("img");
             imagesInChange = {};
             for (let n = 0; n < imgs.length; n++) {
@@ -168,6 +193,7 @@ socket.on("login", (token) => {
             const content = quill.root.innerHTML;
             const author = $("#author-input").val();
 
+            // Saving or creating article
             if (editing) {
                 const articlePath = data.absolute_path.split("/").pop();
                 socket.emit("edit-article", token, `${path}.${articlePath}`, title, content, new Date(data.date), author);
@@ -202,6 +228,11 @@ socket.on("login", (token) => {
         });
     }
 
+    /**
+     * Get articles and folders by a path
+     * @param path {string} Path split by points
+     * @returns {JSON}
+     */
     function getListFromPath(path) {
         const pathList = path.split(".");
         let data = feedData;
@@ -217,23 +248,33 @@ socket.on("login", (token) => {
 
     let path = "";
 
+    /**
+     * Load articles and folders by a list of elements
+     * @param list {JSON}
+     */
     function loadFoldersAndBlogs(list) {
         const foldersGrid = $("#grid-folders");
         const blogsGrid = $("#grid-blogs");
         foldersGrid.empty();
         blogsGrid.empty();
 
+        // If is after the first load
         if (path !== "") {
             $("#folder-add-form").show();
             $("#blogs-add-form").show();
 
-            foldersGrid.append("<div id='go-back-folder' class='admin-grid-item'><span>...</span></div>");
-            $("#go-back-folder").on("click", (e) => {
-                e.preventDefault();
+            // Adding go back button
+            const icon = $("<lord-icon id='go-back-icon' src='https://cdn.lordicon.com/jxwksgwv.json' trigger='hover' state='hover-2'></lord-icon>");
+            foldersGrid.append(icon);
+            const iconData = $(icon[0].shadowRoot.querySelector("div"));
+            iconData.css({display: "grid", "justify-items": "center", "align-items": "center", width: "100%", height: "100%"});
+            $("#go-back-icon").on("click", () => {
+                console.log("go back")
                 path = path.split(".").slice(0, -1).join(".");
                 loadFoldersAndBlogs(getListFromPath(path));
             });
 
+            // Loading articles and folders
             const listKeys = Object.keys(list);
             listKeys.sort((a, b) => {
                 return ((list[a].date !== undefined && list[b].date !== undefined) ? list[b].date.localeCompare(list[a].date) : 0);

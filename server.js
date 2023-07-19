@@ -1,38 +1,39 @@
+// Importing express
 const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const path = require("path");
 const port = 3000;
 
+// Importing socket.io
 const { Server } = require("socket.io");
 const io = new Server({
     maxHttpBufferSize: 1e8 // 100 MB
 }).listen(http);
 
+// Importing fs
 const fs = require("fs");
+
+// Importing nodemailer
 const nodemailer = require("nodemailer");
 const bp = require("body-parser");
 
+// Preparing nodemailer arguments
 require("dotenv").config();
 const userMail = process.env["EMAIL"];
 if (userMail === undefined) throw "Need e-mail";
 const password = process.env["EMAIL_PASSWORD"];
 if (password === undefined) throw "Need Password";
 
+// Importing feed manager
 const FeedManager = require("./Feed.js");
 
+// Adding jquery and public/private files
 app.use("/jquery", express.static(path.join(__dirname, "node_modules/jquery/dist")));
 app.use(express.static("public"));
 app.use(express.static("private"));
 
-Array.prototype.remove = function() {
-    const item = arguments[0];
-    if (this.includes(item)) {
-        const index = this.indexOf(item);
-        this.splice(index, 1);
-    }
-};
-
+// Creating pages
 const pages = ["home", "introducing", "newsletters", "events", "themes", "contact"];
 for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
@@ -41,10 +42,12 @@ for (let i = 0; i < pages.length; i++) {
     });
 }
 
+// Redirect on "/"
 app.get("/", (req, res) => {
     res.redirect("./home");
 });
 
+// Creating feed manager
 const feedManager = new FeedManager(
     "./public/feed.json",
     {
@@ -54,6 +57,7 @@ const feedManager = new FeedManager(
     }
 );
 
+// Creating subpages
 app.get("/newsletters/*", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/newsletters/index.html"));
 });
@@ -64,18 +68,28 @@ app.get("/events/*", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/events/index.html"));
 });
 
+// Creating admin panel
 app.get("/admin/", (req, res) => {
     res.sendFile(path.join(__dirname, "/private/admin/index.html"));
 });
 
+/**
+ * Return random id
+ * @returns {string}
+ */
 function randomID() {
     return Math.random().toString(36).substr(2, 9);
 }
 
+/**
+ * Clean files in /public/feed-data/
+ * @returns {Promise<void>}
+ */
 async function cleanFeedData() {
     console.log("Cleaning feed data folder...");
     let n = 0;
     const feedString = feedManager.getDataAsString();
+    // If is used
     for (const file of fs.readdirSync("./public/feed-data/")) {
         if (!feedString.includes(file)) {
             console.log(`${file} is not used. Deleting...`);
@@ -87,6 +101,11 @@ async function cleanFeedData() {
 }
 cleanFeedData();
 
+/**
+ * Save an image in base 64 in /public/feed-data/
+ * @param dataurl Base 64 image URL
+ * @param callback Callback
+ */
 function dataURLtoFile(dataurl, callback) {
     const arr = dataurl.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -102,13 +121,15 @@ function dataURLtoFile(dataurl, callback) {
     callback(filename);
 }
 
-const tokens = [];
+// Creating admin password
 const adminCode = process.env["ADMIN_CODE"];
 if (adminCode === undefined) throw "Need Password";
 
+// Managing socket.io packages
 io.on("connection", (socket) => {
     let token;
 
+    // Return all articles
     socket.on("get-wingets-data", () => {
         const allPost = feedManager.getAllPostsFromFeed();
         allPost.sort((a, b) => {
@@ -121,13 +142,13 @@ io.on("connection", (socket) => {
         socket.emit("get-wingets-data", res);
     });
 
+    // Managing admin panel
     socket.on("login", (pass) => {
         if (pass !== adminCode) {
             socket.emit("login", "wrong password");
             return;
         }
         token = randomID();
-        tokens.push(token);
         socket.emit("login", token);
 
         console.log(`${socket.id} is connected to the admin panel`);
@@ -201,12 +222,11 @@ io.on("connection", (socket) => {
 
         socket.on("disconnect", () => {
             console.log(`${socket.id} is disconnected from the admin panel`);
-            tokens.remove(token);
         });
     });
 });
 
-// ----- E-MAIL -----
+// Manage email sender
 app.use(bp.json());
 
 app.post("/sendMail/", (req, res) => {
@@ -235,10 +255,12 @@ app.post("/sendMail/", (req, res) => {
     });
 });
 
+// Creating 404 page
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/404.html"), 404);
 });
 
+// Starting app
 http.listen(port, () => {
     console.log(`--> App server is running on port ${port}`);
 });
