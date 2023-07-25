@@ -215,7 +215,7 @@ socket.on("login", (token) => {
     function firstLoad() {
         $("#folder-add-form").hide();
         $("#blogs-add-form").hide();
-        [["newsletters", "Les bulletins"], ["events", "Les manifestations"], ["themes", "Les thèmes"]].forEach((categorie) => {
+        [["newsletters", "Les bulletins"], ["events", "Les manifestations"], ["themes", "Les thèmes"], ["publications", "Les Publications"]].forEach((categorie) => {
             const item = $(`<div id="${categorie[0]}" class="admin-grid-item">
                             <span>${categorie[1]}</span>
                         </div>`);

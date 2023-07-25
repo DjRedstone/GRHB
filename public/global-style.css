@@ -30,6 +30,7 @@ header {
     cursor: pointer;
 }
 .header-link {
+    text-align: center;
     font-variant: normal;
     font-size: 1.75em;
     text-decoration-color: rgba(0, 0, 0, 0);

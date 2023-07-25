@@ -34,7 +34,7 @@ app.use(express.static("public"));
 app.use(express.static("private"));
 
 // Creating pages
-const pages = ["home", "introducing", "newsletters", "events", "themes", "contact"];
+const pages = ["home", "introducing", "newsletters", "events", "themes", "publications", "contact"];
 for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
     app.get(`/${page}/`, (req, res) => {
@@ -53,7 +53,8 @@ const feedManager = new FeedManager(
     {
         newsletters: {},
         events: {},
-        themes: {}
+        themes: {},
+        publications: {}
     }
 );
 
@@ -66,6 +67,9 @@ app.get("/themes/*", (req, res) => {
 });
 app.get("/events/*", (req, res) => {
     res.sendFile(path.join(__dirname, "/public/events/index.html"));
+});
+app.get("/publications/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "/public/publications/index.html"))
 });
 
 // Creating admin panel
